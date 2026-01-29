@@ -11,7 +11,7 @@ st.markdown("""
     <div style="background-color:#1e1e1e; padding:15px; border-radius:10px; border-bottom: 4px solid #2e7d32; text-align:center;">
         <h2 style="color:white; margin:0;">الجامعة التقنية الوسطى</h2>
         <h4 style="color:#4caf50; margin:5px;">كلية البوليتكنك - قسم تقنيات هندسة الالكترونيك والذكاء الاصطناعي</h4>
-        <p style="color:#bbb; margin:0;">إعداد الطلاب: علي نهاد قادر | حسن محمد جاسم | حسين صباح نوري</p>
+        <p style="color:#bbb; margin:0;">إعداد الطلاب: علي منتظر | عبدالله فراس | ايمن مصطفى | علي نهاد قادر | حسن محمد جاسم | حسين صباح نوري</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -41,23 +41,36 @@ if app_mode == "Circuit Simulation":
             chart.plotly_chart(fig, use_container_width=True)
             time.sleep(0.01)
 
-# --- 2. Calculus Stewart Module (Domain & Range) ---
-elif app_mode == "Calculus: Domain & Range":
-    st.subheader("Domain and Range Analysis (Stewart Calculus)")
+# --- 2. Calculus Module (Interactive Domain & Range) ---
+if app_mode == "Calculus: Domain & Range":
+    st.subheader("Interactive Domain and Range Analysis (Stewart Calculus)")
+    
+    # إضافة سلايدر للتحكم في قيم المحور X
+    x_range = st.slider("Select X-axis Limits:", -20.0, 20.0, (-10.0, 10.0))
     func_select = st.selectbox("Select Function:", ["1/x", "sqrt(x)", "ln(x)"])
     
-    x = np.linspace(-10, 10, 500)
+    # توليد القيم بناءً على السلايدر
+    x = np.linspace(x_range[0], x_range[1], 1000)
+    
     if func_select == "1/x":
-        x = x[x != 0]; y = 1/x
-        st.code("Domain: (-∞, 0) U (0, ∞) | Range: (-∞, 0) U (0, ∞)")
+        x = x[x != 0] 
+        y = 1/x
+        st.success(f"Domain: ({x_range[0]}, 0) U (0, {x_range[1]})")
+        st.info("Range: (-∞, 0) U (0, ∞)")
+        
     elif func_select == "sqrt(x)":
-        x = np.linspace(0, 10, 500); y = np.sqrt(x)
-        st.code("Domain: [0, ∞) | Range: [0, ∞)")
-    else:
-        x = np.linspace(0.1, 10, 500); y = np.log(x)
-        st.code("Domain: (0, ∞) | Range: (-∞, ∞)")
+        x = x[x >= 0] 
+        y = np.sqrt(x)
+        st.success(f"Domain: [0, {x_range[1]}]")
+        st.info(f"Range: [0, {np.sqrt(max(0, x_range[1])):.2f}]")
+        
+    elif func_select == "ln(x)":
+        x = x[x > 0] 
+        y = np.log(x)
+        st.success(f"Domain: (0, {x_range[1]}]")
+        st.info(f"Range: (-∞, {np.log(max(0.1, x_range[1])):.2f}]")
 
-    fig = go.Figure(go.Scatter(x=x, y=y, name=func_select))
+    fig = go.Figure(go.Scatter(x=x, y=y, line=dict(color='#ff007f', width=3)))
     fig.update_layout(template="plotly_dark", xaxis_title="x", yaxis_title="f(x)")
     st.plotly_chart(fig, use_container_width=True)
 
@@ -94,5 +107,6 @@ elif app_mode == "AI Sigmoid Logic":
 
 st.markdown("---")
 st.write("الجامعة التقنية الوسطى كلية بوليتكنك قسم تقنيات هندسة الالكترونيك والذكاء الاصطناعي شعبة 7")
+
 
 
