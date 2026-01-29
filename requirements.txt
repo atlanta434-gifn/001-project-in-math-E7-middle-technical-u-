@@ -1,3 +1,4 @@
-sreamlit
+streamlit
 numpy
 plotly
+
