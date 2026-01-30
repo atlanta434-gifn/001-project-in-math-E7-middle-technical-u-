@@ -5,7 +5,15 @@ import time
 
 # --- Page Configuration ---
 st.set_page_config(page_title="MTU AI Project", layout="wide")
-
+# --- University Logo Only ---
+st.markdown(
+    """
+    <div style="text-align: center; padding-bottom: 20px;">
+        <img src="https://studyiniraq.scrd-gate.gov.iq/studyiniraq/Images/mtu.png" width="150">
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 # --- Header Section (Official Branding) ---
 st.markdown("""
     <div style="background-color:#1e1e1e; padding:15px; border-radius:10px; border-bottom: 4px solid #2e7d32; text-align:center;">
@@ -153,6 +161,7 @@ elif app_mode == "الأنظمة الرقمية والبوابات المنطق�
 
 st.markdown("---")
 st.write("الجامعة التقنية الوسطى كلية بوليتكنك قسم تقنيات هندسة الالكترونيك والذكاء الاصطناعي شعبة 7")
+
 
 
 
