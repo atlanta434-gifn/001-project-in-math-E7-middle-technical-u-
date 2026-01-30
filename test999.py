@@ -18,10 +18,10 @@ st.markdown("""
 # --- Sidebar Navigation ---
 st.sidebar.title("Project Modules")
 app_mode = st.sidebar.selectbox("Select Module:", 
-    ["Circuit Simulation", "Calculus: Domain & Range", "Trigonometric Functions", "AI Sigmoid Logic"])
+    ["محاكاة الدوائر dc", "الدومن والرينج", "الدوال المثلثية بالهيرتز", "رسم دالة السيجمويد"])
 
-# --- 1. Kirchhoff RC Circuit Module ---
-if app_mode == "Circuit Simulation":
+# --- 1. كيرشوف rc ---
+if app_mode == "محاكاة الدوائر dc":
     st.subheader("RC Circuit Transient Analysis")
     c1, c2 = st.columns([1, 3])
     with c1:
@@ -41,8 +41,8 @@ if app_mode == "Circuit Simulation":
             chart.plotly_chart(fig, use_container_width=True)
             time.sleep(0.01)
 
-# --- 2. Calculus Module (Interactive Domain & Range) ---
-if app_mode == "Calculus: Domain & Range":
+# --- 2. الدومن والرينج  ---
+if app_mode == "الدومن والرينج":
     st.subheader("Interactive Domain and Range Analysis (Stewart Calculus)")
     
     # إضافة سلايدر للتحكم في قيم المحور X
@@ -74,8 +74,8 @@ if app_mode == "Calculus: Domain & Range":
     fig.update_layout(template="plotly_dark", xaxis_title="x", yaxis_title="f(x)")
     st.plotly_chart(fig, use_container_width=True)
 
-# --- 3. Trigonometric Module ---
-elif app_mode == "Trigonometric Functions":
+# --- 3. الدالة المثلثية ---
+elif app_mode == "الدوال المثلثية بالهيرتز":
     st.subheader("Trigonometric Waveforms")
     trig_func = st.radio("Function:", ["Sin", "Cos", "Tan"], horizontal=True)
     freq = st.slider("Frequency (Hz):", 1, 10, 2)
@@ -93,8 +93,8 @@ elif app_mode == "Trigonometric Functions":
     fig.update_layout(template="plotly_dark", yaxis_range=[-2, 2])
     st.plotly_chart(fig, use_container_width=True)
 
-# --- 4. AI & Sigmoid Module ---
-elif app_mode == "AI Sigmoid Logic":
+# --- 4. دالة السيجمويد ---
+elif app_mode == "رسم دالة السيجمويد":
     st.subheader("Activation Functions in AI")
     st.markdown("The Sigmoid function $S(x) = \\frac{1}{1 + e^{-x}}$ is essential for Neural Networks.")
     
@@ -107,6 +107,7 @@ elif app_mode == "AI Sigmoid Logic":
 
 st.markdown("---")
 st.write("الجامعة التقنية الوسطى كلية بوليتكنك قسم تقنيات هندسة الالكترونيك والذكاء الاصطناعي شعبة 7")
+
 
 
 
