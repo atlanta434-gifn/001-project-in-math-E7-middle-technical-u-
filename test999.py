@@ -25,7 +25,7 @@ if app_mode == "مساعد المهندس الذكي (AI)":
         try:
             # شوكت يكمل كود والله تعب -_-
             genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-           model = genai.GenerativeModel(model_name='models/gemini-1.5-flash')
+           model = genai.GenerativeModel('gemini-1.5-flash-latest')
             
             user_query = st.chat_input("اسأل عن الدوائر، المعادلات، أو نظريات الذكاء الاصطناعي...")
             if user_query:
@@ -139,6 +139,7 @@ elif app_mode == "تحليل الدومين والرينج":
 # --- Footer ---
 st.markdown("---")
 st.write("الجامعة التقنية الوسطى كلية البوليتكنك قسم الالكترونيك والذكاء الاصطناعي شعبةE7")
+
 
 
 
