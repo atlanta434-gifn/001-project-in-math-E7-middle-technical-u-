@@ -48,7 +48,7 @@ if app_mode == "مساعد المهندس الذكي (AI)":
                             "content": f"أنت خبير هندسي لشعبة E7. أجب بالعربية: {user_query}",
                         }
                     ],
-                    model="llama-3.1-70b-versatile",
+                    model="llama-3.3-70b-versatile",
                 )
                 
                 response = chat_completion.choices[0].message.content
@@ -158,6 +158,7 @@ elif app_mode == "تحليل الدومين والرينج":
 # --- Footer ---
 st.markdown("---")
 st.write("الجامعة التقنية الوسطى - كلية البوليتكنك - قسم تقنيات هندسة الالكترونيك والذكاء الاصطناعي - شعبة E7")
+
 
 
 
