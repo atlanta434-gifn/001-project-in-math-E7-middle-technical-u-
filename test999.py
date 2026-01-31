@@ -62,8 +62,8 @@ if app_mode == "مساعد المهندس الذكي (AI)":
             except Exception as e:
                 st.error(f"حدث خطأ في Groq: {e}")
                 # --- قسم توليد الصور الجديد ---
-elif app_mode == "توليد الصور بالذكاء الاصطناعي":
-    st.header("مولد الصور الهندسي")
+elif app_mode == "توليد صور":
+    st.header("توليد صور")
     
     # الإعدادات الخاصة بـ Hugging Face
     HF_TOKEN = "Hf_KwkSnRpxhnEPqmdGZVGgNBCvsSLFaMdigY"
@@ -185,6 +185,7 @@ elif app_mode == "تحليل الدومين والرينج":
 # --- Footer ---
 st.markdown("---")
 st.write("الجامعة التقنية الوسطى - كلية البوليتكنك - قسم تقنيات هندسة الالكترونيك والذكاء الاصطناعي - شعبة E7")
+
 
 
 
