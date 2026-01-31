@@ -28,22 +28,26 @@ app_mode = st.sidebar.selectbox("اختر المختبر الهندسي:",
 # --- 3. شوكت يكمل الكود تعبت -_- ---
 if app_mode == "مساعد  الذكي (AI)":
     st.header("🤖 مساعد  الذكي")
+    
+    # تعريف المفتاح مباشرة
+    api_key_direct = "AIzaSyBGEUIeCn0Vyob9tA254kNbrZrXjR9wmL4"
+    
     try:
-        genai.configure(api_key="AIzaSyBGEUIeCn0Vyob9tA254kNbrZrXjR9wmL4")
-        
-        # --- ضع السطرين هنا ---
+        genai.configure(api_key=api_key_direct)
+        # ا 404
         model = genai.GenerativeModel(model_name='models/gemini-1.5-flash')
-        user_query = st.chat_input("دز اي شي...")
-        # ----------------------
-
+        
+        user_query = st.chat_input("دز اي شي تريده...")
+        
         if user_query:
-            with st.chat_message("user"): st.write(user_query)
+            with st.chat_message("user"):
+                st.write(user_query)
             with st.spinner("جاري التحليل..."):
                 response = model.generate_content(f"أنت خبير هندسي لشعبة E7. أجب بالعربية: {user_query}")
-                with st.chat_message("assistant"): st.write(response.text)
+                with st.chat_message("assistant"):
+                    st.write(response.text)
     except Exception as e:
-        st.error(f"خطأ: {e}")
-
+        st.error(f"حدث خطأ: {e}")
 # --- 4. قسم المنطق الرقمي والبوابات  ---
 elif app_mode == "الأنظمة الرقمية والبوابات":
     st.header("🔢 Digital Systems & Logic Gates")
@@ -145,5 +149,6 @@ elif app_mode == "تحليل الدومين والرينج":
 # --- Footer ---
 st.markdown("---")
 st.write("الجامعة التقنية الوسطى - كلية البوليتكنك - قسم تقنيات هندسة الالكترونيك والذكاء الاصطناعي - شعبة E7")
+
 
 
