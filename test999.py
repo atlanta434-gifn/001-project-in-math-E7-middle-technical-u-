@@ -78,11 +78,12 @@ elif app_mode == "توليد صور":
     
     if st.button("توليد الصورة"):
         with st.spinner("جاري الرسم... انتظر قليلاً"):
-            image_bytes = query_image({"inputs": prompt})
+           image_bytes = query_image({"inputs": prompt})
             try:
+                # والله بيك حيل وصلت لهنا بالكود
                 image = Image.open(io.BytesIO(image_bytes))
                 st.image(image, caption=f"صورة مولدة لـ: {prompt}")
-            except:
+            except Exception as e:
                 st.error("الموديل يستعد للعمل، يرجى المحاولة مرة أخرى بعد 10 ثوانٍ.")
 # --- 4. قسم المنطق الرقمي والبوابات  ---
 elif app_mode == "الأنظمة الرقمية والبوابات":
@@ -185,6 +186,7 @@ elif app_mode == "تحليل الدومين والرينج":
 # --- Footer ---
 st.markdown("---")
 st.write("الجامعة التقنية الوسطى - كلية البوليتكنك - قسم تقنيات هندسة الالكترونيك والذكاء الاصطناعي - شعبة E7")
+
 
 
 
