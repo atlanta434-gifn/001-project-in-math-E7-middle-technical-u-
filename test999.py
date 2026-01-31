@@ -159,8 +159,44 @@ elif app_mode == "الأنظمة الرقمية والبوابات المنطق�
         fig_gate.update_layout(template="plotly_dark", yaxis_range=[0, 1.2], height=300)
         st.plotly_chart(fig_gate, use_container_width=True)
 
+import google.generativeai as genai
+
+# --- AI Assistant Section (Developed by E7 Class) ---
+elif app_mode == "مساعد المهندس الذكي (AI)":
+    st.header("Engineering AI Assistant")
+    
+    # سحب المفتاح من الخزنة السرية لـ Streamlit دون إظهاره في الكود
+    try:
+        GEMINI_KEY = st.secrets["GEMINI_API_KEY"]
+        genai.configure(api_key=GEMINI_KEY)
+        model = genai.GenerativeModel('gemini-1.5-flash')
+    except:
+        st.error("API Key not found in Secrets!")
+
+    user_msg = st.chat_input("Ask me about Circuits, Logic Gates, or Calculus...")
+
+    if user_msg:
+        with st.chat_message("user"):
+            st.write(user_msg)
+            
+        with st.spinner("Analyzing request..."):
+            try:
+                system_context = (
+                    "أنت مهندس خبير ومساعد ذكي صممتك 'شعبة E7' "
+                    "من قسم تقنيات هندسة الالكترونيك والذكاء الاصطناعي في MTU. "
+                    "يجب أن تكون إجاباتك تقنية ودقيقة وباللغة العربية. "
+                )
+                response = model.generate_content(system_context + user_msg)
+                
+                with st.chat_message("assistant"):
+                    st.write(response.text)
+            except Exception as e:
+                st.error("Connection error.")
+
+
 st.markdown("---")
 st.write("الجامعة التقنية الوسطى كلية بوليتكنك قسم تقنيات هندسة الالكترونيك والذكاء الاصطناعي شعبة 7")
+
 
 
 
