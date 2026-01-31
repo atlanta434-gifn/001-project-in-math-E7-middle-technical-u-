@@ -2,6 +2,9 @@ import streamlit as st
 import numpy as np
 import plotly.graph_objects as go
 from groq import Groq
+import requests
+from PIL import Image
+import io
 
 # --- 1. ---
 st.set_page_config(page_title="E7 Comprehensive Engineering Platform", layout="wide")
@@ -21,7 +24,8 @@ app_mode = st.sidebar.selectbox("اختر المختبر الهندسي:",
     ["مساعد المهندس الذكي (AI)", 
      "الأنظمة الرقمية والبوابات",
      "مختبر الدوائر (DC/AC/RC)", 
-     "مختبر الدوال المثلثية", 
+     "مختبر الدوال المثلثية",
+     "توليد صور",
      "مختبر السيجمويد (AI Math)", 
      "تحليل الدومين والرينج"])
 
@@ -57,6 +61,29 @@ if app_mode == "مساعد المهندس الذكي (AI)":
                     st.write(response)
             except Exception as e:
                 st.error(f"حدث خطأ في Groq: {e}")
+                # --- قسم توليد الصور الجديد ---
+elif app_mode == "توليد الصور بالذكاء الاصطناعي":
+    st.header("مولد الصور الهندسي")
+    
+    # الإعدادات الخاصة بـ Hugging Face
+    HF_TOKEN = "Hf_KwkSnRpxhnEPqmdGZVGgNBCvsSLFaMdigY"
+    API_URL = "https://api-inference.huggingface.co/models/runwayml/stable-diffusion-v1-5"
+    headers = {"Authorization": f"Bearer {HF_TOKEN}"}
+
+    def query_image(payload):
+        response = requests.post(API_URL, headers=headers, json=payload)
+        return response.content
+
+    prompt = st.text_input("صف الصورة بالإنجليزية:", "Futuristic laboratory for AI and Electronics")
+    
+    if st.button("توليد الصورة"):
+        with st.spinner("جاري الرسم... انتظر قليلاً"):
+            image_bytes = query_image({"inputs": prompt})
+            try:
+                image = Image.open(io.BytesIO(image_bytes))
+                st.image(image, caption=f"صورة مولدة لـ: {prompt}")
+            except:
+                st.error("الموديل يستعد للعمل، يرجى المحاولة مرة أخرى بعد 10 ثوانٍ.")
 # --- 4. قسم المنطق الرقمي والبوابات  ---
 elif app_mode == "الأنظمة الرقمية والبوابات":
     st.header("🔢 Digital Systems & Logic Gates")
@@ -158,6 +185,7 @@ elif app_mode == "تحليل الدومين والرينج":
 # --- Footer ---
 st.markdown("---")
 st.write("الجامعة التقنية الوسطى - كلية البوليتكنك - قسم تقنيات هندسة الالكترونيك والذكاء الاصطناعي - شعبة E7")
+
 
 
 
