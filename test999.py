@@ -3,130 +3,139 @@ import numpy as np
 import plotly.graph_objects as go
 import google.generativeai as genai
 
-# --- 1. إعدادات الصفحة ---
+# --- 1. إعدادات الصفحة والهوية ---
 st.set_page_config(page_title="E7 Engineering Platform", layout="wide")
 
-# --- 2. الهوية البصرية (اللوغو والأسماء) ---
 st.markdown("<div style='text-align: center;'><img src='https://studyiniraq.scrd-gate.gov.iq/studyiniraq/Images/mtu.png' width='120'></div>", unsafe_allow_html=True)
 st.markdown("""
     <div style="background-color:#1e1e1e; padding:15px; border-radius:10px; border-bottom: 4px solid #2e7d32; text-align:center;">
-        <h2 style="color:white; margin:0;">الجامعة التقنية الوسطى - شعبة E7</h2>
-        <p style="color:#bbb;">إعداد: علي منتظر | عبدالله فراس | ايمن مصطفى | علي نهاد قادر | حسن محمد جاسم | حسين صباح نوري</p>
+        <h2 style="color:white; margin:0;">الجامعة التقنية الوسطى - تطبيق المهندس الشامل</h2>
+        <p style="color:#4caf50; font-weight:bold;">مشروع طلاب شعبة E7</p>
     </div>
     """, unsafe_allow_html=True)
 
-# --- 3. القائمة الجانبية المتطورة ---
-with st.sidebar:
-    st.title("⚙️ الهندسة والذكاء")
-    app_mode = st.selectbox("اختر القسم العملي:", 
-        ["مساعد المهندس (AI)", "الدوائر الكهربائية (DC/AC/RC)", "تحليل الدوال المثلثية (6 الدوال)", 
-         "الذكاء الاصطناعي (Sigmoid)", "الرياضيات (Domain & Range)"])
+# --- 2. القائمة الجانبية ---
+app_mode = st.sidebar.selectbox("اختر المختبر الهندسي:", 
+    ["مساعد المهندس الذكي (AI)", "مختبر الدوائر (DC/AC/RC)", "مختبر الدوال المثلثية", "مختبر السيجمويد (AI Math)", "تحليل الدومين والرينج"])
 
-# --- 4. معالجة قسم المساعد الذكي (AI) - حل مشكلة الـ 404 ---
-if app_mode == "مساعد المهندس (AI)":
-    st.header("🤖 Engineering AI Assistant")
+# --- 3. حل مشكلة الـ AI (إصلاح خطأ 404) ---
+if app_mode == "مساعد المهندس الذكي (AI)":
+    st.header("🤖 مساعد المهندس الذكي")
     if "GEMINI_API_KEY" in st.secrets:
         try:
+            # طريقة الربط المحدثة لتفادي أخطاء الموديل
             genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-            # تم تعديل اسم النموذج ليتوافق مع أحدث نسخة للمكتبة
-            model = genai.GenerativeModel('gemini-pro') 
-            user_msg = st.chat_input("اسألني عن الإلكترونيات أو حلول المسائل...")
-            if user_msg:
-                with st.chat_message("user"): st.write(user_msg)
-                with st.spinner("جاري التحليل الهندسي..."):
-                    prompt = f"أنت مهندس خبير صممتك شعبة E7 في الجامعة التقنية الوسطى. أجب باحترافية: {user_msg}"
-                    response = model.generate_content(prompt)
+            model = genai.GenerativeModel('gemini-1.5-flash') # تغيير الموديل لأحدث نسخة سريعة
+            
+            user_query = st.chat_input("اسأل عن الدوائر، المعادلات، أو نظريات الذكاء الاصطناعي...")
+            if user_query:
+                with st.chat_message("user"): st.write(user_query)
+                with st.spinner("جاري المعالجة..."):
+                    # إضافة سياق لضمان رد الموديل حتى لو كان هناك مشاكل في النسخة
+                    response = model.generate_content(f"أنت خبير هندسي لشعبة E7. أجب بالعربية: {user_query}")
                     with st.chat_message("assistant"): st.write(response.text)
         except Exception as e:
-            st.error(f"خطأ في الاتصال: {e}")
+            st.error(f"خطأ في الاتصال: تأكد من صلاحية المفتاح أو جرب تحديث الصفحة. (تفاصيل: {e})")
     else:
-        st.warning("يرجى التأكد من وضع GEMINI_API_KEY في Secrets")
+        st.warning("يرجى وضع GEMINI_API_KEY في إعدادات Secrets.")
 
-# --- 5. قسم الدوائر الكهربائية المتطور (DC/AC/RC/Mixed) ---
-elif app_mode == "الدوائر الكهربائية (DC/AC/RC)":
-    st.header("⚡ Circuit Analysis (Mixed & Transient)")
-    type_cir = st.radio("نوع الدائرة:", ["DC Mixed (Resistors)", "RC Transient", "AC Sine Wave"])
+# --- 4. مختبر الدوائر المتكامل (تفعيل AC) ---
+elif app_mode == "مختبر الدوائر (DC/AC/RC)":
+    st.header("⚡ Circuit Analysis Lab")
+    mode = st.tabs(["DC Mixed", "AC Circuits", "RC Transient"])
     
-    if type_cir == "DC Mixed (Resistors)":
-        st.write("حساب الربط المختلط (Series-Parallel)")
-        r1 = st.number_input("R1 (Series)", value=100.0)
-        r2 = st.number_input("R2 (Parallel 1)", value=200.0)
-        r3 = st.number_input("R3 (Parallel 2)", value=200.0)
-        v_in = st.number_input("Source Voltage (V)", value=12.0)
+    with mode[0]: # DC Mixed
+        st.subheader("الربط المختلط (Series-Parallel)")
+        col1, col2 = st.columns(2)
+        r1 = col1.number_input("R1 (Series) Ω", value=10.0)
+        r2 = col1.number_input("R2 (Parallel) Ω", value=20.0)
+        r3 = col2.number_input("R3 (Parallel) Ω", value=20.0)
+        vin = col2.number_input("Voltage Source (V)", value=12.0)
         
-        r_parallel = (r2 * r3) / (r2 + r3)
-        r_total = r1 + r_parallel
-        i_total = v_in / r_total
-        st.success(f"المقاومة الكلية: {r_total:.2f} Ω | التيار الكلي: {i_total:.4f} A")
+        req = r1 + (r2*r3)/(r2+r3)
+        st.metric("المقاومة الكلية Req", f"{req:.2f} Ω")
+        st.metric("التيار الكلي Itotal", f"{(vin/req):.3f} A")
 
-    elif type_cir == "RC Transient":
-        r = st.slider("Resistance (Ω)", 1000, 100000, 10000)
-        c = st.slider("Capacitance (μF)", 1, 1000, 100) * 1e-6
-        t = np.linspace(0, 5 * (r*c), 500)
-        v_c = 12 * (1 - np.exp(-t/(r*c)))
-        fig = go.Figure(go.Scatter(x=t, y=v_c, name="Charging Vc", line=dict(color="#00ffcc")))
-        fig.update_layout(title="شحن المتسعة عبر الزمن", template="plotly_dark")
+    with mode[1]: # AC Circuits (تم تفعيله)
+        st.subheader("تحليل دوائر التيار المتناوب AC")
+        v_peak = st.slider("Peak Voltage (Vm)", 1, 311, 220)
+        freq = st.slider("Frequency (Hz)", 1, 100, 50)
+        t = np.linspace(0, 0.04, 500)
+        v_ac = v_peak * np.sin(2 * np.pi * freq * t)
+        
+        fig = go.Figure(go.Scatter(x=t, y=v_ac, name="AC Voltage", line=dict(color="#00d4ff")))
+        fig.update_layout(title="موجة الجيب المتناوبة", xaxis_title="Time (s)", yaxis_title="Voltage (V)", template="plotly_dark")
         st.plotly_chart(fig)
+        st.write(f"V_rms ≈ {v_peak * 0.707:.2f} V")
 
-# --- 6. قسم الدوال المثلثية الستة مع الزوايا ---
-elif app_mode == "تحليل الدوال المثلثية (6 الدوال)":
-    st.header("📐 Trigonometric Analysis")
-    func_type = st.selectbox("اختر الدالة:", ["sin", "cos", "tan", "cot", "sec", "csc"])
+    with mode[2]: # RC Transient
+        st.write("شحن وتفريغ المتسعة")
+        r_val = st.number_input("Resistance Ω", value=1000)
+        c_val = st.number_input("Capacitance μF", value=100) * 1e-6
+        tau = r_val * c_val
+        t_rc = np.linspace(0, 5*tau, 500)
+        v_rc = 12 * (1 - np.exp(-t_rc/tau))
+        st.plotly_chart(go.Figure(go.Scatter(x=t_rc, y=v_rc)).update_layout(template="plotly_dark"))
+
+# --- 5. مختبر الدوال المثلثية (تغيير القيم والزوايا) ---
+elif app_mode == "مختبر الدوال المثلثية":
+    st.header("📐 Trigonometric Functions Lab")
+    f_type = st.selectbox("اختر الدالة:", ["sin", "cos", "tan", "cot", "sec", "csc"])
+    custom_angle = st.number_input("أدخل زاوية معينة لحسابها (درجة):", value=60.0)
     
-    # شبكة الزوايا المطلوبة (60, 90, 120...)
-    angles_deg = np.arange(0, 361, 30)
-    angles_rad = np.radians(angles_deg)
-    
-    # حساب القيم
-    if func_type == "sin": y_vals = np.sin(angles_rad)
-    elif func_type == "cos": y_vals = np.cos(angles_rad)
-    elif func_type == "tan": y_vals = np.tan(angles_rad)
-    elif func_type == "cot": y_vals = 1/np.tan(angles_rad)
-    elif func_type == "sec": y_vals = 1/np.cos(angles_rad)
-    elif func_type == "csc": y_vals = 1/np.sin(angles_rad)
-    
-    # الرسم البياني
-    fig = go.Figure(go.Scatter(x=angles_deg, y=y_vals, mode='lines+markers', name=func_type))
-    fig.update_layout(title=f"رسم دالة {func_type} مع زوايا المختبر", xaxis=dict(tickvals=angles_deg), template="plotly_dark")
+    # حساب قيمة الزاوية المدخلة
+    rad = np.radians(custom_angle)
+    try:
+        if f_type == "sin": res = np.sin(rad)
+        elif f_type == "cos": res = np.cos(rad)
+        elif f_type == "tan": res = np.tan(rad)
+        elif f_type == "cot": res = 1/np.tan(rad)
+        elif f_type == "sec": res = 1/np.cos(rad)
+        elif f_type == "csc": res = 1/np.sin(rad)
+        st.success(f"قيمة {f_type}({custom_angle}°) = {res:.4f}")
+    except: st.error("قيمة غير معرفة لهذه الزاوية")
+
+    # رسم الموجة مع زوايا محددة (60, 90, 120...)
+    angles = np.arange(0, 361, 10)
+    y_plot = np.sin(np.radians(angles)) # افتراضي sin للرسم
+    fig = go.Figure(go.Scatter(x=angles, y=y_plot, mode='lines+markers'))
+    fig.update_layout(xaxis=dict(tickvals=[0, 60, 90, 120, 180, 270, 360]), template="plotly_dark")
     st.plotly_chart(fig)
-    
-    # جدول البيانات
-    st.write("قيم الزوايا الدقيقة:")
-    st.table({"الزاوية (Degree)": angles_deg, "القيمة": y_vals})
 
-# --- 7. قسم السيجمويد وحل المسائل ---
-elif app_mode == "الذكاء الاصطناعي (Sigmoid)":
-    st.header("🧠 Neural Network Activation")
-    st.subheader("حل مسألة Sigmoid")
-    x_input = st.number_input("أدخل قيمة المدخل (x):", value=0.0)
-    sigmoid_res = 1 / (1 + np.exp(-x_input))
-    st.metric("النتيجة S(x)", f"{sigmoid_res:.4f}")
+# --- 6. مختبر السيجمويد (حل مسائل تفاعلي) ---
+elif app_mode == "مختبر السيجمويد (AI Math)":
+    st.header("🧠 Sigmoid Solver")
+    val_x = st.number_input("أدخل قيمة x لحل المسألة:", value=1.0)
+    s_x = 1 / (1 + np.exp(-val_x))
     
-    # الرسم البياني للدالة
+    st.latex(r"S(x) = \frac{1}{1 + e^{-x}}")
+    st.metric(f"النتيجة لـ x={val_x}", f"{s_x:.4f}")
+    
     x_range = np.linspace(-10, 10, 100)
     y_range = 1 / (1 + np.exp(-x_range))
-    fig = go.Figure(go.Scatter(x=x_range, y=y_range, line=dict(color="yellow")))
-    fig.add_trace(go.Scatter(x=[x_input], y=[sigmoid_res], mode='markers', marker=dict(size=15, color="red")))
-    fig.update_layout(title="دالة السيجمويد مع تحديد نقطتك", template="plotly_dark")
+    fig = go.Figure(go.Scatter(x=x_range, y=y_range))
+    fig.add_trace(go.Scatter(x=[val_x], y=[s_x], mode='markers', marker=dict(size=12, color='red'), name="Your Point"))
+    fig.update_layout(template="plotly_dark")
     st.plotly_chart(fig)
 
-# --- 8. قسم الدومين والرينج وحل المسائل ---
-elif app_mode == "الرياضيات (Domain & Range)":
-    st.header("📉 Domain & Range Solver")
-    func_math = st.selectbox("اختر نوع الدالة للتحليل:", ["Rational (1/x)", "Square Root (√x)", "Logarithmic (ln)"])
+# --- 7. تحليل الدومين والرينج (تفاعلي) ---
+elif app_mode == "تحليل الدومين والرينج":
+    st.header("📉 Domain & Range Analyzer")
+    func_choice = st.selectbox("الدالة:", ["1/x", "sqrt(x)", "ln(x)"])
+    shift = st.slider("إزاحة الدالة (x - a):", -5.0, 5.0, 0.0)
     
-    x = np.linspace(-10, 10, 400)
-    if func_math == "Rational (1/x)":
-        st.info("Domain: x ≠ 0 | Range: y ≠ 0")
-        y = 1/x; y[np.abs(y)>10] = np.nan
-    elif func_math == "Square Root (√x)":
-        st.info("Domain: x ≥ 0 | Range: y ≥ 0")
-        x = x[x>=0]; y = np.sqrt(x)
+    x_domain = np.linspace(-10, 10, 500)
+    if func_choice == "1/x":
+        y_domain = 1/(x_domain - shift)
+        y_domain[np.abs(y_domain) > 10] = np.nan
+        st.info(f"Domain: x ≠ {shift}")
+    elif func_choice == "sqrt(x)":
+        x_domain = x_domain[x_domain >= shift]
+        y_domain = np.sqrt(x_domain - shift)
+        st.info(f"Domain: x ≥ {shift}")
     
-    fig = go.Figure(go.Scatter(x=x, y=y))
-    fig.update_layout(title="تمثيل الدالة بيانياً", template="plotly_dark")
-    st.plotly_chart(fig)
+    st.plotly_chart(go.Figure(go.Scatter(x=x_domain, y=y_domain)).update_layout(template="plotly_dark"))
 
 # --- Footer ---
 st.markdown("---")
-st.write("الجامعة التقنية الوسطى كلية البوليتكنك للتخصصات الهندسية قسم الكترونيك وذكاء اصطناعي شعبة E7")
+st.write("الجامعة التقنية الوسطى كلية البوليتكنك قسم الالكترونيك والذكاء الاصطناعي شعبةE7")
