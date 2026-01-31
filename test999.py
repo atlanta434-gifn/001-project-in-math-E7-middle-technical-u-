@@ -26,18 +26,18 @@ app_mode = st.sidebar.selectbox("اختر المختبر الهندسي:",
      "تحليل الدومين والرينج"])
 
 # --- 3. شوكت يكمل الكود تعبت -_- ---
-if app_mode == "مساعد  الذكي (AI)":
-    st.header(" مساعد ا الذكي")
+if app_mode == "مساعد المهندس الذكي (AI)":
+    st.header("🤖 مساعد المهندس الذكي")
     
-    # 
+    # المفتاح المباشر
     api_key_direct = "AIzaSyBGEUIeCn0Vyob9tA254kNbrZrXjR9wmL4"
     
     try:
         genai.configure(api_key=api_key_direct)
-        # 
+        # تصحيح المسار الكامل للموديل لتجنب خطأ 404
         model = genai.GenerativeModel(model_name='models/gemini-1.5-flash')
         
-        # 
+        # هذا السطر يجب أن يكون بنفس مستوى محاذاة الموديل
         user_query = st.chat_input("دز اي شي تريده...")
         
         if user_query:
@@ -45,7 +45,7 @@ if app_mode == "مساعد  الذكي (AI)":
                 st.write(user_query)
             
             with st.spinner("جاري التحليل..."):
-                # 
+                # تأكد أن هذه الأسطر تبدأ بمسافة إضافية تحت spinner
                 response = model.generate_content(f"أنت خبير هندسي لشعبة E7. أجب بالعربية: {user_query}")
                 with st.chat_message("assistant"):
                     st.write(response.text)
@@ -153,6 +153,7 @@ elif app_mode == "تحليل الدومين والرينج":
 # --- Footer ---
 st.markdown("---")
 st.write("الجامعة التقنية الوسطى - كلية البوليتكنك - قسم تقنيات هندسة الالكترونيك والذكاء الاصطناعي - شعبة E7")
+
 
 
 
