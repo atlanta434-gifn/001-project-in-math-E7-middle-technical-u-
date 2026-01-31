@@ -9,7 +9,7 @@ st.set_page_config(page_title="E7 Engineering Platform", layout="wide")
 st.markdown("<div style='text-align: center;'><img src='https://studyiniraq.scrd-gate.gov.iq/studyiniraq/Images/mtu.png' width='120'></div>", unsafe_allow_html=True)
 st.markdown("""
     <div style="background-color:#1e1e1e; padding:15px; border-radius:10px; border-bottom: 4px solid #2e7d32; text-align:center;">
-        <h2 style="color:white; margin:0;">الجامعة التقنية الوسطى - تطبيق المهندس الشامل</h2>
+        <h2 style="color:white; margin:0;">الجامعة التقنية الوسطى - </h2>
         <p style="color:#4caf50; font-weight:bold;">مشروع طلاب شعبة E7</p>
     </div>
     """, unsafe_allow_html=True)
@@ -139,3 +139,4 @@ elif app_mode == "تحليل الدومين والرينج":
 # --- Footer ---
 st.markdown("---")
 st.write("الجامعة التقنية الوسطى كلية البوليتكنك قسم الالكترونيك والذكاء الاصطناعي شعبةE7")
+
