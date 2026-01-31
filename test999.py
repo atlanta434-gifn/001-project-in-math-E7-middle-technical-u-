@@ -6,7 +6,7 @@ import google.generativeai as genai
 # --- 1. ---
 st.markdown("""
     <div style="background-color:#1e1e1e; padding:15px; border-radius:10px; border-bottom: 4px solid #2e7d32; text-align:center;">
-        <h2 style="color:white; margin:0;">الجامعة التقنية الوسطى - تطبيق المهندس الشامل</h2>
+        <h2 style="color:white; margin:0;">الجامعة التقنية الوسطى - </h2>
         <p style="color:#4caf50; font-weight:bold; margin:5px;">
             مشروع طلاب شعبة E7: 
             <span style="color:#bbb; font-weight:normal;">علي منتظر | عبدالله فراس | ايمن مصطفى | علي نهاد قادر | حسن محمد جاسم | حسين صباح نوري</span>
@@ -141,4 +141,5 @@ st.markdown("---")
 st.write("الجامعة التقنية الوسطى كلية البوليتكنك قسم الالكترونيك والذكاء الاصطناعي شعبةE7")
 
 
-Lastly!!!!!!
+
+
