@@ -3,14 +3,14 @@ import numpy as np
 import plotly.graph_objects as go
 import google.generativeai as genai
 
-# --- 1. إعدادات الصفحة والهوية ---
-st.set_page_config(page_title="E7 Engineering Platform", layout="wide")
-
-st.markdown("<div style='text-align: center;'><img src='https://studyiniraq.scrd-gate.gov.iq/studyiniraq/Images/mtu.png' width='120'></div>", unsafe_allow_html=True)
+# --- 1. ---
 st.markdown("""
     <div style="background-color:#1e1e1e; padding:15px; border-radius:10px; border-bottom: 4px solid #2e7d32; text-align:center;">
-        <h2 style="color:white; margin:0;">الجامعة التقنية الوسطى - </h2>
-        <p style="color:#4caf50; font-weight:bold;">مشروع طلاب شعبة E7</p>
+        <h2 style="color:white; margin:0;">الجامعة التقنية الوسطى - تطبيق المهندس الشامل</h2>
+        <p style="color:#4caf50; font-weight:bold; margin:5px;">
+            مشروع طلاب شعبة E7: 
+            <span style="color:#bbb; font-weight:normal;">علي منتظر | عبدالله فراس | ايمن مصطفى | علي نهاد قادر | حسن محمد جاسم | حسين صباح نوري</span>
+        </p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -18,20 +18,20 @@ st.markdown("""
 app_mode = st.sidebar.selectbox("اختر المختبر الهندسي:", 
     ["مساعد المهندس الذكي (AI)", "مختبر الدوائر (DC/AC/RC)", "مختبر الدوال المثلثية", "مختبر السيجمويد (AI Math)", "تحليل الدومين والرينج"])
 
-# --- 3. حل مشكلة الـ AI (إصلاح خطأ 404) ---
+# --- 3.  ---
 if app_mode == "مساعد المهندس الذكي (AI)":
     st.header("🤖 مساعد المهندس الذكي")
     if "GEMINI_API_KEY" in st.secrets:
         try:
-            # طريقة الربط المحدثة لتفادي أخطاء الموديل
+            # شوكت يكمل كود والله تعب -_-
             genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-            model = genai.GenerativeModel('gemini-1.5-flash') # تغيير الموديل لأحدث نسخة سريعة
+            model = genai.GenerativeModel('gemini-1.5-flash-latest')
             
             user_query = st.chat_input("اسأل عن الدوائر، المعادلات، أو نظريات الذكاء الاصطناعي...")
             if user_query:
                 with st.chat_message("user"): st.write(user_query)
                 with st.spinner("جاري المعالجة..."):
-                    # إضافة سياق لضمان رد الموديل حتى لو كان هناك مشاكل في النسخة
+                    # 
                     response = model.generate_content(f"أنت خبير هندسي لشعبة E7. أجب بالعربية: {user_query}")
                     with st.chat_message("assistant"): st.write(response.text)
         except Exception as e:
@@ -140,3 +140,5 @@ elif app_mode == "تحليل الدومين والرينج":
 st.markdown("---")
 st.write("الجامعة التقنية الوسطى كلية البوليتكنك قسم الالكترونيك والذكاء الاصطناعي شعبةE7")
 
+
+Lastly!!!!!!
