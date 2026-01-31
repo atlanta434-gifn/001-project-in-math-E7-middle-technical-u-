@@ -1,7 +1,7 @@
 import streamlit as st
 import numpy as np
 import plotly.graph_objects as go
-import google.generativeai as genai
+from groq import Groq
 
 # --- 1. ---
 st.set_page_config(page_title="E7 Comprehensive Engineering Platform", layout="wide")
@@ -27,31 +27,36 @@ app_mode = st.sidebar.selectbox("اختر المختبر الهندسي:",
 
 # --- 3. شوكت يكمل الكود تعبت -_- ---
 if app_mode == "مساعد المهندس الذكي (AI)":
-    st.header("🤖 مساعد المهندس الذكي")
+    st.header("🤖 مساعد المهندس الذكي (بواسطة Groq)")
     
-    # المفتاح المباشر
-    api_key_direct = "AIzaSyBGEUIeCn0Vyob9tA254kNbrZrXjR9wmL4"
+    # وضع مفتاح API الخاص بك مباشرة
+    client = Groq(api_key="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")
     
-    try:
-        genai.configure(api_key=api_key_direct)
-        # تصحيح المسار الكامل للموديل لتجنب خطأ 404
-        model = genai.GenerativeModel(model_name='models/gemini-1.5-flash')
+    user_query = st.chat_input("دز اي شي تريده...")
+    
+    if user_query:
+        with st.chat_message("user"):
+            st.write(user_query)
         
-        # هذا السطر يجب أن يكون بنفس مستوى محاذاة الموديل
-        user_query = st.chat_input("دز اي شي تريده...")
-        
-        if user_query:
-            with st.chat_message("user"):
-                st.write(user_query)
-            
-            with st.spinner("جاري التحليل..."):
-                # تأكد أن هذه الأسطر تبدأ بمسافة إضافية تحت spinner
-                response = model.generate_content(f"أنت خبير هندسي لشعبة E7. أجب بالعربية: {user_query}")
+        with st.spinner("جاري التحليل السريع..."):
+            try:
+                # طلب الرد من نموذج Llama 3 القوي
+                chat_completion = client.chat.completions.create(
+                    messages=[
+                        {
+                            "role": "user",
+                            "content": f"أنت خبير هندسي لشعبة E7. أجب بالعربية: {user_query}",
+                        }
+                    ],
+                    model="llama-3.1-70b-versatile",
+                )
+                
+                response = chat_completion.choices[0].message.content
+                
                 with st.chat_message("assistant"):
-                    st.write(response.text)
-    except Exception as e:
-        st.error(f"حدث خطأ: {e}")
-        
+                    st.write(response)
+            except Exception as e:
+                st.error(f"حدث خطأ في Groq: {e}")
 # --- 4. قسم المنطق الرقمي والبوابات  ---
 elif app_mode == "الأنظمة الرقمية والبوابات":
     st.header("🔢 Digital Systems & Logic Gates")
@@ -153,6 +158,7 @@ elif app_mode == "تحليل الدومين والرينج":
 # --- Footer ---
 st.markdown("---")
 st.write("الجامعة التقنية الوسطى - كلية البوليتكنك - قسم تقنيات هندسة الالكترونيك والذكاء الاصطناعي - شعبة E7")
+
 
 
 
