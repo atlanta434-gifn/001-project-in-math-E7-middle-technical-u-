@@ -79,7 +79,7 @@ elif app_mode == "توليد صور":
     if st.button("توليد الصورة"):
         with st.spinner("جاري الرسم... انتظر قليلاً"):
            image_bytes = query_image({"inputs": prompt})
-            try:
+    try:
                 # والله بيك حيل وصلت لهنا بالكود
                 image = Image.open(io.BytesIO(image_bytes))
                 st.image(image, caption=f"صورة مولدة لـ: {prompt}")
@@ -186,6 +186,7 @@ elif app_mode == "تحليل الدومين والرينج":
 # --- Footer ---
 st.markdown("---")
 st.write("الجامعة التقنية الوسطى - كلية البوليتكنك - قسم تقنيات هندسة الالكترونيك والذكاء الاصطناعي - شعبة E7")
+
 
 
 
