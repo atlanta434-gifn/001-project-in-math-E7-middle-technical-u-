@@ -30,11 +30,11 @@ if app_mode == "مساعد  الذكي (AI)":
     st.header("🤖 مساعد  الذكي")
     try:
         # 
-        genai.configure(api_key="AIzaSyBGEUIeCn0Vyob9tA254kNbrZrXjR9wmL4")
+    genai.configure(api_key="AIzaSyBGEUIeCn0Vyob9tA254kNbrZrXjR9wmL4")
         # اللهم صل على محمد وعلى اله وصحبه
-        model = genai.GenerativeModel(model_name='models/gemini-1.5-flash')
-        
-        user_query = st.chat_input("اسأل عن الدوائر أو التقنيات الهندسية...")
+    model = genai.GenerativeModel(model_name='models/gemini-1.5-flash')
+         
+     user_query = st.chat_input("دز اي شي تريده...")
         if user_query:
             with st.chat_message("user"): st.write(user_query)
             with st.spinner("جاري التحليل..."):
@@ -144,3 +144,4 @@ elif app_mode == "تحليل الدومين والرينج":
 # --- Footer ---
 st.markdown("---")
 st.write("الجامعة التقنية الوسطى - كلية البوليتكنك - قسم تقنيات هندسة الالكترونيك والذكاء الاصطناعي - شعبة E7")
+
