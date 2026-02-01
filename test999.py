@@ -2,200 +2,124 @@ import streamlit as st
 import numpy as np
 import plotly.graph_objects as go
 from groq import Groq
-import requests
-from PIL import Image
-import io
 
-# --- 1. ---
+# 
 st.set_page_config(page_title="E7 Comprehensive Engineering Platform", layout="wide")
 
+# 
+client = Groq(api_key="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")
+
+def get_ai_explanation(prompt):
+    """دالة لجلب الشرح الهندي من الذكاء الاصطناعي"""
+    try:
+        completion = client.chat.completions.create(
+            messages=[{"role": "user", "content": f"أنت خبير هندسي لشعبة E7. اشرح لي رياضياً وبالخطوات التفصيلية بالعربية ما يلي: {prompt}"}],
+            model="llama-3.3-70b-versatile",
+        )
+        return completion.choices[0].message.content
+    except Exception as e:
+        return f"حدث خطأ أثناء الاتصال بالذكاء الاصطناعي: {e}"
+
+# 
 st.markdown("""
     <div style="background-color:#1e1e1e; padding:15px; border-radius:10px; border-bottom: 4px solid #2e7d32; text-align:center;">
-        <h2 style="color:white; margin:0;">الجامعة التقنية الوسطى - </h2>
-        <p style="color:#4caf50; font-weight:bold; margin:5px;">
-            مشروع طلاب شعبة E7: 
-            <span style="color:#bbb; font-weight:normal;">علي منتظر | عبدالله فراس | ايمن مصطفى | علي نهاد قادر | رؤى نديم كريم | | حسن محمد جاسم | حسين صباح نوري</span>
-        </p>
+        <h2 style="color:white; margin:0;">الجامعة التقنية الوسطى - كلية البوليتكنك</h2>
+        <p style="color:#4caf50; font-weight:bold; margin:5px;">مشروع طلاب شعبة E7: علي منتظر | عبدالله فراس | ايمن مصطفى | علي نهاد | رؤى نديم | حسن محمد | حسين صباح</p>
     </div>
     """, unsafe_allow_html=True)
 
-# --- 2. القائمة الجانبية  ---
+# القائمة الجانبية
 app_mode = st.sidebar.selectbox("اختر المختبر الهندسي:", 
     ["مساعد المهندس الذكي (AI)", 
      "الأنظمة الرقمية والبوابات",
      "مختبر الدوائر (DC/AC/RC)", 
      "مختبر الدوال المثلثية",
-     "توليد صور",
      "مختبر السيجمويد (AI Math)", 
-     "تحليل الدومين والرينج"])
+     "تحليل الدومين والرينج المتقدم"])
 
-# --- 3. شوكت يكمل الكود تعبت -_- ---
+# 1. مساعد المهندس الذكي العام
 if app_mode == "مساعد المهندس الذكي (AI)":
-    st.header("🤖 مساعد المهندس الذكي (بواسطة Groq)")
-    
-    # وضع مفتاح API الخاص بك مباشرة
-    client = Groq(api_key="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")
-    
-    user_query = st.chat_input("دز اي شي تريده...")
-    
+    st.header("🤖 مساعد المهندس الذكي العام")
+    user_query = st.chat_input("اسأل عن أي مسألة هندسية أو رياضية...")
     if user_query:
-        with st.chat_message("user"):
-            st.write(user_query)
-        
-        with st.spinner("جاري التحليل السريع..."):
-            try:
-                # طلب الرد من نموذج Llama 3 القوي
-                chat_completion = client.chat.completions.create(
-                    messages=[
-                        {
-                            "role": "user",
-                            "content": f"أنت خبير هندسي لشعبة E7. أجب بالعربية: {user_query}",
-                        }
-                    ],
-                    model="llama-3.3-70b-versatile",
-                )
-                
-                response = chat_completion.choices[0].message.content
-                
-                with st.chat_message("assistant"):
-                    st.write(response)
-            except Exception as e:
-                st.error(f"حدث خطأ في Groq: {e}")
-                # --- قسم توليد الصور الجديد ---
-elif app_mode == "توليد صور":
-    st.header("توليد صور")
-    
-    # الإعدادات الخاصة بـ Hugging Face
-    HF_TOKEN = "Hf_KwkSnRpxhnEPqmdGZVGgNBCvsSLFaMdigY"
-    API_URL = "https://api-inference.huggingface.co/models/runwayml/stable-diffusion-v1-5"
-    headers = {"Authorization": f"Bearer {HF_TOKEN}"}
+        with st.chat_message("user"): st.write(user_query)
+        with st.spinner("جاري التحليل..."):
+            response = get_ai_explanation(user_query)
+            with st.chat_message("assistant"): st.write(response)
 
-    def query_image(payload):
-        response = requests.post(API_URL, headers=headers, json=payload)
-        return response.content
-
-    prompt = st.text_input("صف الصورة بالإنجليزية:", "Futuristic laboratory for AI and Electronics")
-    
-    if st.button("توليد الصورة"):
-        with st.spinner("جاري الرسم... انتظر قليلاً"):
-            image_bytes = query_image({"inputs": prompt})
-    try:
-                # محاولة فتح الصورة
-                image = Image.open(io.BytesIO(image_bytes))
-                st.image(image, caption=f"صورة مولدة لـ {prompt}")
-    except Exception as e:
-                # أضفنا متغير e هنا لنعرف الخطأ الحقيقي
-                st.warning(f"الموديل يحمل الآن.. انتظر 10 ثواني واضغط الزر مرة أخرى. (وصف الحالة: {e})")
-# --- 4. قسم المنطق الرقمي والبوابات  ---
+# 2. الأنظمة الرقمية مع AI
 elif app_mode == "الأنظمة الرقمية والبوابات":
-    st.header("🔢 Digital Systems & Logic Gates")
-    tab1, tab2 = st.tabs(["التحويل بين الأنظمة", "محاكاة البوابات المنطقية"])
+    st.header("🔢 الأنظمة الرقمية والبوابات المنطقية")
+    tab1, tab2 = st.tabs(["التحويل بين الأنظمة", "محاكاة البوابات"])
     
     with tab1:
         num = st.number_input("أدخل رقماً عشرياً:", min_value=0, value=10)
-        c1, c2, c3 = st.columns(3)
-        c1.metric("Binary (ثنائي)", bin(num)[2:])
-        c2.metric("Octal (ثماني)", oct(num)[2:])
-        c3.metric("Hex (ستة عشري)", hex(num)[2:].upper())
-        
+        st.write(f"الثنائي: {bin(num)}, الثماني: {oct(num)}, الستة عشري: {hex(num).upper()}")
+        if st.button("اشرح لي خطوات التحويل"):
+            st.info(get_ai_explanation(f"كيف يتم تحويل الرقم العشري {num} إلى ثنائي وثماني وستة عشري؟"))
+
     with tab2:
-        gate = st.selectbox("اختر البوابة المنطقية:", ["AND", "OR", "XOR", "NAND", "NOR", "NOT"])
-        col_a, col_b = st.columns(2)
-        in_a = col_a.radio("Input A", [0, 1], horizontal=True)
-        in_b = col_b.radio("Input B", [0, 1], horizontal=True) if gate != "NOT" else None
-        
-        if gate == "AND": res = in_a & in_b
-        elif gate == "OR": res = in_a | in_b
-        elif gate == "XOR": res = in_a ^ in_b
-        elif gate == "NAND": res = 1 if not (in_a & in_b) else 0
-        elif gate == "NOR": res = 1 if not (in_a | in_b) else 0
-        elif gate == "NOT": res = 1 if in_a == 0 else 0
-        
-        st.markdown(f'<div style="text-align:center; padding:20px; border:2px solid #4caf50; border-radius:10px;"><h1 style="color:#4caf50;">Output: {res}</h1></div>', unsafe_allow_html=True)
+        gate = st.selectbox("البوابة:", ["AND", "OR", "XOR", "NAND", "NOR", "NOT"])
+        a = st.radio("مدخل A", [0, 1], horizontal=True)
+        b = st.radio("مدخل B", [0, 1], horizontal=True) if gate != "NOT" else None
+        res = 0 # منطق البوابات
+        if gate == "AND": res = a & b
+        elif gate == "OR": res = a | b
+        st.success(f"النتيجة: {res}")
+        if st.button("اشرح عمل هذه البوابة"):
+            st.info(get_ai_explanation(f"اشرح لي جدول الحقيقة (Truth Table) لبوابة {gate}."))
 
-# --- 5. مختبر الدوائر (Mixed DC/AC/RC) ---
+# 3. مختبر الدوائر مع AI
 elif app_mode == "مختبر الدوائر (DC/AC/RC)":
-    mode = st.tabs(["DC Mixed (الربط المختلط)", "AC Circuits", "RC Transient"])
-    with mode[0]:
-        r1 = st.number_input("R1 (Series) Ω", value=10.0)
-        r2 = st.number_input("R2 (Parallel 1) Ω", value=20.0)
-        r3 = st.number_input("R3 (Parallel 2) Ω", value=20.0)
-        v_s = st.number_input("Voltage Source (V)", value=12.0)
-        r_eq = r1 + (r2*r3)/(r2+r3)
-        st.success(f"المقاومة الكلية Req = {r_eq:.2f} Ω | التيار الكلي I = {(v_s/r_eq):.3f} A")
-    with mode[1]:
-        v_p = st.slider("Peak Voltage", 1, 311, 220)
-        f = st.slider("Freq (Hz)", 1, 100, 50)
-        t = np.linspace(0, 0.04, 500)
-        v_ac = v_p * np.sin(2 * np.pi * f * t)
-        st.plotly_chart(go.Figure(go.Scatter(x=t, y=v_ac, line=dict(color="#00d4ff"))).update_layout(template="plotly_dark", title="AC Sine Wave"))
-    with mode[2]:
-        r_val = st.number_input("R (Ω)", value=1000); c_val = st.number_input("C (μF)", value=100)*1e-6
-        t_rc = np.linspace(0, 5*(r_val*c_val), 500)
-        v_rc = 12 * (1 - np.exp(-t_rc/(r_val*c_val)))
-        st.plotly_chart(go.Figure(go.Scatter(x=t_rc, y=v_rc)).update_layout(template="plotly_dark", title="RC Charging Curve"))
+    st.header("⚡ مختبر الدوائر الكهربائية")
+    r1 = st.number_input("R1 (Ω)", value=10.0)
+    v = st.number_input("الجهد (V)", value=12.0)
+    if st.button("تحليل الدائرة بواسطة AI"):
+        st.write(get_ai_explanation(f"دائرة كهربائية فيها جهد {v} فولت ومقاومة {r1} أوم، احسب التيار والقدرة واشرح القوانين."))
 
-# --- 6. مختبر الدوال المثلثية الستة ---
+# 4. مختبر الدوال المثلثية مع AI
 elif app_mode == "مختبر الدوال المثلثية":
-    st.header("📐 Trigonometric Functions (6 Functions)")
-    f_type = st.selectbox("اختر الدالة:", ["sin", "cos", "tan", "cot", "sec", "csc"])
-    ang = st.number_input("أدخل الزاوية (بالدرجات):", value=60.0)
-    rad = np.radians(ang)
-    try:
-        if f_type == "sin": res = np.sin(rad)
-        elif f_type == "cos": res = np.cos(rad)
-        elif f_type == "tan": res = np.tan(rad)
-        elif f_type == "cot": res = 1/np.tan(rad)
-        elif f_type == "sec": res = 1/np.cos(rad)
-        elif f_type == "csc": res = 1/np.sin(rad)
-        st.success(f"النتيجة: {f_type}({ang}°) = {res:.4f}")
-    except: st.error("قيمة غير معرفة")
-    
-    x_plot = np.arange(0, 361, 5)
-    y_plot = np.sin(np.radians(x_plot)) # Default for visual
-    fig = go.Figure(go.Scatter(x=x_plot, y=y_plot, mode='lines'))
-    fig.update_layout(xaxis=dict(tickvals=[0, 60, 90, 120, 180, 270, 360]), template="plotly_dark")
-    st.plotly_chart(fig)
+    st.header("📐 الدوال المثلثية الستة")
+    func = st.selectbox("الدالة:", ["sin", "cos", "tan", "cot", "sec", "csc"])
+    deg = st.number_input("الزاوية بالدرجات:", value=45.0)
+    if st.button("احسب واشرح بالخطوات"):
+        st.write(get_ai_explanation(f"احسب قيمة {func}({deg}) بالخطوات مع توضيح موقعها في دائرة الوحدة."))
 
-# --- 7. مختبر السيجمويد ---
+# 5. مختبر السيجمويد مع AI
 elif app_mode == "مختبر السيجمويد (AI Math)":
-    st.header("🧠 Sigmoid Activation Function")
-    x_in = st.number_input("أدخل قيمة x لحل المعادلة:", value=0.0)
-    sig = 1 / (1 + np.exp(-x_in))
-    st.latex(r"S(x) = \frac{1}{1 + e^{-x}}")
-    st.metric(f"النتيجة عند x={x_in}", f"{sig:.4f}")
+    st.header("🧠 دالة السيجمويد والذكاء الاصطناعي")
+    x_val = st.number_input("قيمة x:", value=0.0)
+    if st.button("شرح الأهمية الرياضية"):
+        st.write(get_ai_explanation(f"ما هي دالة السيجمويد؟ وكيف تحسب عند x={x_val}؟ وما علاقتها بالتعلم العميق؟"))
+
+# 6. تحليل الدومين والرينج المتقدم (الميزة الكبرى)
+elif app_mode == "تحليل الدومين والرينج المتقدم":
+    st.header("📉 تحليل الدومين والرينج المتقدم")
+    st.write("يمكنك كتابة الدالة كما في بايثون، مثال: `x**2` للتربيع، `np.sqrt(x)` للجذر، `1/x` للكسر.")
     
-    x_range = np.linspace(-10, 10, 100)
-    fig = go.Figure(go.Scatter(x=x_range, y=1/(1+np.exp(-x_range)), name="Sigmoid"))
-    fig.add_trace(go.Scatter(x=[x_in], y=[sig], mode='markers', marker=dict(size=12, color='red'), name="Your Point"))
-    st.plotly_chart(fig.update_layout(template="plotly_dark"))
+    formula = st.text_input("أدخل معادلة الدالة y = ", "x**2")
+    x_min = st.number_input("بداية الدومين (x min):", value=-10.0)
+    x_max = st.number_input("نهاية الدومين (x max):", value=10.0)
+    
+    try:
+        x_vals = np.linspace(x_min, x_max, 500)
+        # السماح باستخدام مكتبة numpy داخل الإدخال
+        y_vals = eval(formula, {"x": x_vals, "np": np})
+        
+        fig = go.Figure(go.Scatter(x=x_vals, y=y_vals, mode='lines', name=f"y = {formula}"))
+        fig.update_layout(template="plotly_dark", title=f"رسم الدالة: {formula}")
+        st.plotly_chart(fig)
+        
+        if st.button("تحليل الدومين والرينج لهذه الدالة بواسطة AI"):
+            with st.spinner("جاري التحليل الرياضي..."):
+                prompt = f"حلل الدالة y = {formula} رياضياً. أوجد الدومين (Domain) والرينج (Range) واشرح إذا كان هناك إزاحة (Shift) أفقية أو عمودية بناءً على القواعد الرياضية."
+                st.markdown(get_ai_explanation(prompt))
+                
+    except Exception as e:
+        st.error(f"خطأ في صيغة الدالة: {e}. تأكد من كتابتها بشكل صحيح (مثلاً x**2 بدلاً من x^2).")
 
-# --- 8. تحليل الدومين والرينج ---
-elif app_mode == "تحليل الدومين والرينج":
-    st.header("📉 Domain & Range Analyzer")
-    choice = st.selectbox("الدالة:", ["1/x", "sqrt(x)", "ln(x)"])
-    a = st.slider("الإزاحة (a):", -5.0, 5.0, 0.0)
-    x_vals = np.linspace(-10, 10, 500)
-    if choice == "1/x":
-        y_vals = 1/(x_vals - a); y_vals[np.abs(y_vals)>10] = np.nan
-        st.info(f"Domain: x ≠ {a}")
-    elif choice == "sqrt(x)":
-        x_vals = x_vals[x_vals >= a]; y_vals = np.sqrt(x_vals - a)
-        st.info(f"Domain: x ≥ {a}")
-    st.plotly_chart(go.Figure(go.Scatter(x=x_vals, y=y_vals)).update_layout(template="plotly_dark"))
-
-# --- Footer ---
 st.markdown("---")
-st.write("الجامعة التقنية الوسطى - كلية البوليتكنك - قسم تقنيات هندسة الالكترونيك والذكاء الاصطناعي - شعبة E7")
-
-
-
-
-
-
-
-
-
+st.write("الجامعة التقنية الوسطى - قسم الكترونيك والذكاء الاصطناعي - شعبة E7")
 
 
 
