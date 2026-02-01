@@ -24,7 +24,7 @@ def get_ai_explanation(prompt):
 st.markdown("""
     <div style="background-color:#1e1e1e; padding:15px; border-radius:10px; border-bottom: 4px solid #2e7d32; text-align:center;">
         <h2 style="color:white; margin:0;">الجامعة التقنية الوسطى - كلية البوليتكنك</h2>
-        <p style="color:#4caf50; font-weight:bold; margin:5px;">مشروع طلاب شعبة E7: علي منتظر | عبدالله فراس | ايمن مصطفى | علي نهاد | رؤى نديم | حسن محمد | حسين صباح</p>
+        <p style="color:#4caf50; font-weight:bold; margin:5px;">مشروع طلاب شعبة E7:| علي نهاد | رؤى نديم | حسن محمد |</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -120,6 +120,7 @@ elif app_mode == "تحليل الدومين والرينج المتقدم":
 
 st.markdown("---")
 st.write("الجامعة التقنية الوسطى - قسم الكترونيك والذكاء الاصطناعي - شعبة E7")
+
 
 
 
