@@ -21,20 +21,31 @@ API_KEYS = {
 }
 
 def ask_ai(prompt, context="General Engineering"):
-    """نظام التبديل التلقائي بين 5 محركات لضمان دقة 100%"""
-    full_prompt = f"أنت خبير هندسي وأكاديمي عالمي. اشرح بالتفصيل الممل خطوة بخطوة مع توضيح الأساسيات لـ: {prompt}. السياق: {context}"
-    # محاولة OpenAI كخيار أول (GPT-4o)
-    try:
-        client = openai.OpenAI(api_key=API_KEYS["OPENAI"])
-        response = client.chat.completions.create(model="gpt-4o", messages=[{"role": "user", "content": full_prompt}])
-        return response.choices[0].message.content
-    except:
-        try: # التبديل لـ DeepSeek (للمنطق الرياضي)
-            client = openai.OpenAI(api_key=API_KEYS["DEEPSEEK"], base_url="https://api.deepseek.com")
-            response = client.chat.completions.create(model="deepseek-chat", messages=[{"role": "user", "content": full_prompt}])
-            return response.choices[0].message.content
-        except:
-            return "⚠️ المحرك الأساسي منشغل، جاري تحويل الطلب للمحرك الاحتياطي..."
+    
+    engines = [
+        ("OpenAI GPT-4o", "gpt-4o", "openai"),
+        ("DeepSeek", "deepseek-chat", "deepseek"),
+        ("Groq Llama", "llama-3.3-70b-versatile", "groq")
+    ]
+    
+    for name, model_id, provider in engines:
+        try:
+            if provider == "openai":
+                client = openai.OpenAI(api_key=API_KEYS["OPENAI"])
+                res = client.chat.completions.create(model=model_id, messages=[{"role": "user", "content": prompt}])
+            elif provider == "deepseek":
+                client = openai.OpenAI(api_key=API_KEYS["DEEPSEEK"], base_url="https://api.deepseek.com")
+                res = client.chat.completions.create(model=model_id, messages=[{"role": "user", "content": prompt}])
+            elif provider == "groq":
+                client = Groq(api_key=API_KEYS["GROQ"])
+                res = client.chat.completions.create(model=model_id, messages=[{"role": "user", "content": prompt}])
+            
+            return res.choices[0].message.content + f"\n\n*(تمت المعالجة بواسطة: {name})*"
+        except Exception as e:
+            print(f"Error in {name}: {e}") # سيظهر الخطأ في التيرمينال فقط لتعرف السبب
+            continue # جرب المحرك التالي
+            
+    return "⚠️ جميع المحركات مشغولة حالياً، يرجى إعادة المحاولة بعد 10 ثوانٍ."
 
 # علي كاعد تفتر هنا مو
 st.markdown("""
@@ -163,4 +174,5 @@ elif menu == "17. اللغة الإنجليزية الهندسية":
 # الله اكبر ولله الحمد
 st.markdown("---")
 st.markdown("<p style='text-align:center;'>تم التطوير بواسطة المهم نحصل درجات شعبة E7 -</p>", unsafe_allow_html=True)
+
 
