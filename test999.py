@@ -68,10 +68,10 @@ with st.sidebar:
 if app_mode == "🏠 الشاشة الرئيسية":
     col1, col2 = st.columns([2, 1])
     with col1:
-        st.title("مرحباً بك في مستقبل الهندسة")
-        st.write("هذه المنصة صممت لتكون المرجع الأول لطلاب شعبة E7، حيث تدمج بين العمليات الحسابية التقليدية وقوة الذكاء الاصطناعي التوليدي.")
-        if st.button("بدء محادثة هندسية ذكية"):
-            query = st.text_input("ما الذي يخطر في بالك اليوم؟")
+        st.title("مرحباً بك في موقع شعبة E7")
+        st.write("بعده الموقع قيد التطوير:)")
+        if st.button("بدء محادثة"):
+            query = st.text_input("شتريد؟")
             if query: st.write(get_ai_response(query))
     with col2:
         st.info("💡 **نصيحة اليوم:** استخدم قسم الرياضيات لتحليل المشتقات المعقدة وتطبيقاتها في هندسة الإلكترونيك.")
@@ -164,3 +164,4 @@ st.markdown(f"""
         تم التطوير ليكون المشروع الأفضل لعام {datetime.now().year}
     </div>
     """, unsafe_allow_html=True)
+
