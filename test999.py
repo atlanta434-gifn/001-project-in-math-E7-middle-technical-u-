@@ -161,7 +161,8 @@ st.markdown(f"""
     <div class="footer">
         <hr>
         شعبة E7 - احسن شعبة E7 - الجامعة التقنية الوسطى<br>
-        تم التطوير ليكون المشروع الأفضل لعام {datetime.now().year}
+         {datetime.now().year}
     </div>
     """, unsafe_allow_html=True)
+
 
