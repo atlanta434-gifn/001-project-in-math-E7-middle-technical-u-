@@ -44,7 +44,7 @@ st.markdown("""
 st.markdown(f"""
     <div class="main-header">
         <h1 style="color:white; margin:0;">E7 QUANTUM MULTIVERSE HUB</h1>
-        <p style="color:#8b949e;">المنصة الهندسية المتكاملة - إعداد المهندسين:</p>
+        <p style="color:#8b949e;">:</p>
         <p style="color:#58a6ff; font-weight:bold;">علي نهاد | رؤى نديم | حسن محمد | عبدالله فراس | علي منتظر | أيمن مصطفى | حسين صباح</p>
     </div>
     """, unsafe_allow_html=True)
@@ -132,5 +132,6 @@ else:
         st.markdown(ask_ai(user_q, menu))
 
 st.markdown("---")
-st.write(f"التاريخ: {datetime.now().strftime('%Y-%m-%d')} | نظام E7 المتكامل")
+st.write(f"التاريخ: {datetime.now().strftime('%Y-%m-%d')} | ")
+
 
