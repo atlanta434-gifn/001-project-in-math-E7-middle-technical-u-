@@ -1,8 +1,10 @@
 streamlit
 numpy
+pandas
 plotly
 groq
-requests
-Pillow
-pandas
+openai
 sympy
+scipy
+matplotlib
+Pillow
