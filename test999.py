@@ -1,178 +1,136 @@
 import streamlit as st
 import numpy as np
-import pandas as pd
 import plotly.graph_objects as go
-import plotly.express as px
 import sympy as sp
 from groq import Groq
 import openai
 from datetime import datetime
 
-# بسم الله الرحمن الرحيم
-st.set_page_config(page_title="E7 Quantum Multiverse Hub", layout="wide", page_icon="♾️")
+# --- إعدادات الحماية والواجهة ---
+st.set_page_config(page_title="E7 Quantum Universe", layout="wide")
 
-# اللهم صل على محمد وال محمد
-API_KEYS = {
-    "OPENAI": "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",
-    "DEEPSEEK": "sk-3954bc2eabef472e990e8852da62ca1b",
-    "GROQ": "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",
-    "COMET": "sk-8qYRpTvLRkYEDV7zHvsmjkAje1nqwtwZUhpggRXpUyJXDM9J",
-    "OPENQUANTUM": "s_34337906708641699009dd703cb403d5"
-}
+# جلب المفاتيح بأمان
+keys = st.secrets
 
-def ask_ai(prompt, context="General Engineering"):
-    
-    engines = [
-        ("OpenAI GPT-4o", "gpt-4o", "openai"),
-        ("DeepSeek", "deepseek-chat", "deepseek"),
-        ("Groq Llama", "llama-3.3-70b-versatile", "groq")
-    ]
-    
-    for name, model_id, provider in engines:
-        try:
-            if provider == "openai":
-                client = openai.OpenAI(api_key=API_KEYS["OPENAI"])
-                res = client.chat.completions.create(model=model_id, messages=[{"role": "user", "content": prompt}])
-            elif provider == "deepseek":
-                client = openai.OpenAI(api_key=API_KEYS["DEEPSEEK"], base_url="https://api.deepseek.com")
-                res = client.chat.completions.create(model=model_id, messages=[{"role": "user", "content": prompt}])
-            elif provider == "groq":
-                client = Groq(api_key=API_KEYS["GROQ"])
-                res = client.chat.completions.create(model=model_id, messages=[{"role": "user", "content": prompt}])
-            
-            return res.choices[0].message.content + f"\n\n*(تمت المعالجة بواسطة: {name})*"
-        except Exception as e:
-            print(f"Error in {name}: {e}") # سيظهر الخطأ في التيرمينال فقط لتعرف السبب
-            continue # جرب المحرك التالي
-            
-    return "⚠️ جميع المحركات مشغولة حالياً، يرجى إعادة المحاولة بعد 10 ثوانٍ."
+# تعريف العملاء
+client_oa = openai.OpenAI(api_key=keys["OPENAI_KEY"])
+client_ds = openai.OpenAI(api_key=keys["DEEPSEEK_KEY"], base_url="https://api.deepseek.com")
+client_gr = Groq(api_key=keys["GROQ_KEY"])
 
-# علي كاعد تفتر هنا مو
+def ask_ai(prompt, section_name):
+    """محرك الاستجابة الشامل خطوة بخطوة"""
+    full_prompt = f"أنت بروفيسور هندسي عالمي. في قسم {section_name}، حل المسألة التالية بالتفصيل الممل، مع شرح القوانين والأساسيات والخطوات الصغيرة جداً: {prompt}"
+    try:
+        # المحاولة بـ GPT-4o كخيار أول للدقة
+        res = client_oa.chat.completions.create(model="gpt-4o", messages=[{"role": "user", "content": full_prompt}])
+        return res.choices[0].message.content
+    except:
+        try: # التبديل لـ Groq للسرعة
+            res = client_gr.chat.completions.create(model="llama-3.3-70b-versatile", messages=[{"role": "user", "content": full_prompt}])
+            return res.choices[0].message.content
+        except:
+            return "⚠️ عذراً، المحركات الهندسية قيد التحديث حالياً."
+
+# --- التنسيق البصري العالمي ---
 st.markdown("""
     <style>
-    .stApp { background: radial-gradient(circle, #000814 0%, #001d3d 100%); color: #ffc300; }
-    .quantum-card {
-        background: rgba(0, 29, 61, 0.7);
-        border: 1px solid #003566;
-        padding: 25px; border-radius: 20px;
-        box-shadow: 0 0 25px #003566;
-        margin-bottom: 20px;
-    }
-    .main-title {
-        font-family: 'Orbitron', sans-serif;
-        background: linear-gradient(90deg, #ffc300, #00d4ff);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-align: center; font-size: 3.5em; font-weight: bold;
-    }
+    .stApp { background: #010409; color: #e6edf3; }
+    .main-header { background: linear-gradient(90deg, #1f6feb, #238636); padding: 30px; border-radius: 15px; text-align: center; border: 1px solid #30363d; }
+    .section-card { background: #0d1117; border: 1px solid #30363d; padding: 20px; border-radius: 10px; margin-top: 20px; }
     </style>
     """, unsafe_allow_html=True)
 
-# والله تعبت
-st.markdown("<h1 class='main-title'>E7 QUANTUM MULTIVERSE HUB</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align:center; color:#00d4ff;'> - جامعة التقنية الوسطى</p>", unsafe_allow_html=True)
+# الهيدر مع الأسماء
+st.markdown(f"""
+    <div class="main-header">
+        <h1 style="color:white; margin:0;">E7 QUANTUM MULTIVERSE HUB</h1>
+        <p style="color:#8b949e;">المنصة الهندسية المتكاملة - إعداد المهندسين:</p>
+        <p style="color:#58a6ff; font-weight:bold;">علي نهاد | رؤى نديم | حسن محمد | عبدالله فراس | علي منتظر | أيمن مصطفى | حسين صباح</p>
+    </div>
+    """, unsafe_allow_html=True)
 
-# والله باردة
+# --- القائمة الجانبية (19 قسماً) ---
 with st.sidebar:
-    st.title("🌐 الملاحة الكونية")
-    menu = st.selectbox("اختر البُعد الهندسي:", [
-        "1. المنطق الرقمي والكمي", "2. الكيمياء والكهرباء", "3. كيرشوف والدوائر AC/DC", 
-        "4. الرياضيات الجبرية", "5. الدومين والرينج الاحترافي", "6. التفاضل وتطبيقاته", 
+    st.title("🌐 الأقسام التخصصية")
+    menu = st.radio("اختر القسم المطلوب:", [
+        "1. المنطق الرقمي وبوابات SOP/POS", "2. الكيمياء الكهربائية والعناصر", "3. كيرشوف والربط المختلط AC/DC",
+        "4. الرياضيات العامة الجبرية", "5. الدومين والرينج الاحترافي", "6. التفاضل وتطبيقاته",
         "7. التكامل وتطبيقاته", "8. الجبر البولياني", "9. المنطق الرياضي المكثف",
-        "10. الحوسبة الكمومية", "11. فيزياء أشباه الموصلات", "12. مختبر DC/AC العملي", 
-        "13. أساسيات الفيزياء والرياضيات", "14. فلسفة الرياضيات", "15. الرسم الهندسي (AutoCAD)",
-        "16. أساسيات الكوانتم والفوتونات", "17. اللغة الإنجليزية الهندسية", "18. الفيزياء الكمومية"
+        "10. الحوسبة الكمومية (Quantum)", "11. فيزياء أشباه الموصلات", "12. مختبر DC-AC العملي",
+        "13. أساسيات الرياضيات والفيزياء", "14. فلسفة الرياضيات", "15. الرسم الهندسي (AutoCAD)",
+        "16. أساسيات الكوانتم والفوتونات", "17. اللغة الإنجليزية للعرب", "18. الفيزياء الكمومية وأهميتها"
     ])
 
-# 7:38
-if menu == "1. المنطق الرقمي والكمي":
-    st.header("🔢 المنطق الرقمي والأنظمة الكمومية")
+# --- تشغيل الأقسام ---
+st.write(f"### {menu}")
+
+# 1. المنطق الرقمي
+if menu == "1. المنطق الرقمي وبوابات SOP/POS":
     col1, col2 = st.columns(2)
     with col1:
-        gate_type = st.multiselect("ربط البوابات:", ["AND", "OR", "NAND", "NOR", "XOR", "NOT"])
-        input_bits = st.text_input("المدخلات (مثال: 1,0):", "1,1")
-    
+        logic_in = st.text_area("أدخل التعبير المنطقي أو المينتيرمز:", "F(A,B,C) = Σm(0,2,4,6)")
+        gate = st.selectbox("اختر البوابة الأساسية للتصميم:", ["AND", "NAND", "OR", "XOR"])
     with col2:
-        conversion_type = st.selectbox("التحويل بين الأنظمة:", ["Decimal to Binary", "Binary to Hex", "Quantum Qubit State"])
-    
-    if st.button("تحليل الدالة المنطقية"):
-        res = ask_ai(f"اشرح بوابات {gate_type} بمدخلات {input_bits}. استخرج SOP و POS وجدول الحقيقة وارسم الدائرة منطقياً.")
-        st.markdown(f"<div class='quantum-card'>{res}</div>", unsafe_allow_html=True)
-        st.markdown("")
-
-# كون نحصل الدرحات على هذا التعب :(
-elif menu == "2. الكيمياء والكهرباء":
-    st.header("🧪 الكيمياء الكهربائية والعناصر")
-    element = st.text_input("أدخل العنصر أو المادة الكيميائية:", "Copper")
-    if st.button("تحليل الخواص"):
-        res = ask_ai(f"حلل مادة {element} كيميائياً وكهربائياً. اذكر الناقلية، التفاعلات، والاستخدامات في هندسة الكهرباء.")
-        st.write(res)
-        st.markdown("")
-
-# باقيييي شوووية
-elif menu == "3. كيرشوف والدوائر AC/DC":
-    st.header("🔌 تحليل كيرشوف والربط المختلط")
-    circuit_type = st.radio("نوع التيار:", ["DC", "AC (Phasor Analysis)"])
-    problem_desc = st.text_area("صف الدائرة بالتفصيل:")
-    if st.button("حل الدائرة"):
-        res = ask_ai(f"حل المسألة التالية باستخدام KVL و KCL للتيار {circuit_type}: {problem_desc}. ارسم مسارات التيار ذهنياً.")
-        st.write(res)
-        st.markdown("")
-
-
-elif menu == "5. الدومين والرينج الاحترافي":
-    st.header("📉 تحليل الدومين والرينج المتقدم")
-    func_str = st.text_input("أدخل الدالة y =", "sqrt(x-1)/(x-3)")
-    
-    
-    col_g1, col_g2 = st.columns(2)
-    with col_g1:
-        # الرسم التقليدي
-        x = np.linspace(-10, 10, 400)
-        y = np.sin(x) # مثال مبسط
-        fig1 = px.line(x=x, y=y, title="Linear Plot")
-        st.plotly_chart(fig1)
-    with col_g2:
-        # الرسم القطبي
-        fig2 = px.scatter_polar(r=[1, 2, 3, 4], theta=[0, 45, 90, 135], title="Polar Plot")
-        st.plotly_chart(fig2)
+        st.info("سيقوم الذكاء الاصطناعي برسم Truth Table واستخراج SOP/POS.")
+    if st.button("تحليل وتصميم"):
+        st.markdown(ask_ai(f"حلل {logic_in} باستخدام بوابات {gate} وحولها بين الأنظمة الرقمية والكمومية.", menu))
         
-    if st.button("تحليل رياضي عميق"):
-        st.write(ask_ai(f"أوجد الدومين والرينج للدالة {func_str} واشرح الفترات والخطوط التقاربية."))
 
+# 2. الكيمياء والكهرباء
+elif menu == "2. الكيمياء الكهربائية والعناصر":
+    element = st.text_input("أدخل العنصر أو المادة الكيميائية لمقارنتها:", "Silicon vs Germanium")
+    if st.button("تحليل الخواص الكيميائية"):
+        st.markdown(ask_ai(f"قارن بين المواد التالية من حيث الخواص الكيميائية والكهربائية والاستخدامات: {element}", menu))
 
+# 3. كيرشوف والربط المختلط
+elif menu == "3. كيرشوف والربط المختلط AC/DC":
+    prob = st.text_area("أدخل تفاصيل الدائرة (مقاومات، فولتية، تردد):")
+    if st.button("بدء التحليل الشبكي"):
+        st.markdown(ask_ai(f"حل الدائرة التالية باستخدام قوانين كيرشوف مع رسم الدالة وتوضيح فرق الطور في AC: {prob}", menu))
+        
+
+# 5. الدومين والرينج
+elif menu == "5. الدومين والرينج الاحترافي":
+    eq = st.text_input("أدخل المعادلة:", "y = sqrt(x**2 - 9)")
+    if st.button("تحليل النطاق والمدى"):
+        st.markdown(ask_ai(f"أوجد Domain و Range لـ {eq} واشرحها بـ 4 أنواع من الرسم البياني.", menu))
+        # رسم بياني تفاعلي
+        x = np.linspace(-10, 10, 400)
+        fig = go.Figure(data=go.Scatter(x=x, y=np.sin(x), name="Domain Plot")) # مثال للرسم
+        st.plotly_chart(fig)
+
+# 6 & 7. التفاضل والتكامل
 elif menu in ["6. التفاضل وتطبيقاته", "7. التكامل وتطبيقاته"]:
-    st.header(f"🧮 {menu}")
-    topic = st.selectbox("اختر التطبيق:", ["Area under curve", "Volume of revolution", "Rate of change", "Optimization"])
-    eq_math = st.text_input("المعادلة:", "x**3 - 2*x + 1")
-    if st.button("بدء الحل التفصيلي"):
-        st.write(ask_ai(f"حل {eq_math} ضمن تطبيق {topic} مع شرح كل خطوة والقوانين المستخدمة من ملفات Calculus الخاصة بنا."))
-        st.markdown("")
+    task = st.text_input("أدخل المعادلة المراد معالجتها:")
+    if st.button("حل تفصيلي مع التطبيقات"):
+        st.markdown(ask_ai(f"حل {task} واذكر جميع تطبيقاتها الهندسية خطوة بخطوة.", menu))
+        
 
+# 10. الحوسبة الكمومية
+elif menu == "10. الحوسبة الكمومية (Quantum)":
+    topic = st.selectbox("الموضوع:", ["Qubits", "Entanglement", "Superposition"])
+    if st.button("شرح كمومي عميق"):
+        st.markdown(ask_ai(f"اشرح {topic} بطريقة الحوسبة الكمومية المعقدة والبسيطة.", menu))
 
-elif menu == "10. الحوسبة الكمومية":
-    st.header("🌌 Quantum Computing Frontier")
-    q_gate = st.selectbox("البوابة الكمومية:", ["Hadamard (H)", "CNOT", "Pauli-X"])
-    if st.button("محاكاة البوابة"):
-        st.write(ask_ai(f"اشرح عمل بوابة {q_gate} وكيف تغير حالة الـ Qubit من 0 إلى Superposition."))
-        st.markdown("[attachment_0](attachment)")
-
-
+# 15. الرسم الهندسي
 elif menu == "15. الرسم الهندسي (AutoCAD)":
-    st.header("📐 تعليم الرسم الهندسي و AutoCAD")
-    tool = st.selectbox("الأداة:", ["Line/Circle", "Layers", "3D Modeling", "Isometric View"])
-    if st.button("شرح الأداة"):
-        st.write(ask_ai(f"اشرح كيفية استخدام {tool} في AutoCAD 2024 للمهندسين المبتدئين خطوة بخطوة."))
+    cmd = st.text_input("ماذا تريد أن تتعلم في الأوتوكاد؟", "رسم المساقط الثلاثة")
+    if st.button("عرض خطوات الرسم"):
+        st.markdown(ask_ai(f"اشرح كيفية تنفيذ {cmd} في AutoCAD مع الأوامر المختصرة.", menu))
 
+# 17. اللغة الإنجليزية
+elif menu == "17. اللغة الإنجليزية للعرب":
+    text = st.text_input("أدخل الجملة أو المصطلح الهندسي:")
+    if st.button("ترجمة وتعليم مبتكر"):
+        st.markdown(ask_ai(f"ترجم ووضح النطق والقواعد الهندسية لـ: {text}", menu))
 
-elif menu == "17. اللغة الإنجليزية الهندسية":
-    st.header("🇬🇧 English for Engineers")
-    term = st.text_input("أدخل مصطلحاً هندسياً للتعلم:")
-    if st.button("تعلم بطريقة مبتكرة"):
-        st.write(ask_ai(f"اشرح المصطلح {term} بالإنجليزية والعربية، ضعه في جملة هندسية، واذكر كيف يلفظ بطريقة صحيحة."))
+# (بقية الأقسام تعمل بنفس الطريقة عبر استدعاء ask_ai)
+else:
+    st.info("هذا القسم قيد التفعيل عبر محرك الذكاء الاصطناعي... أدخل سؤالك أدناه.")
+    user_q = st.text_area("أدخل استفسارك هنا:")
+    if st.button("تحليل"):
+        st.markdown(ask_ai(user_q, menu))
 
-# الله اكبر ولله الحمد
 st.markdown("---")
-st.markdown("<p style='text-align:center;'>تم التطوير بواسطة المهم نحصل درجات شعبة E7 -</p>", unsafe_allow_html=True)
-
+st.write(f"التاريخ: {datetime.now().strftime('%Y-%m-%d')} | نظام E7 المتكامل")
 
