@@ -1,127 +1,166 @@
 import streamlit as st
 import numpy as np
+import pandas as pd
 import plotly.graph_objects as go
+import sympy as sp
 from groq import Groq
+from datetime import datetime
 
-# 
-st.set_page_config(page_title="E7 Comprehensive Engineering Platform", layout="wide")
+# اللهم صل على محمد وعلى ال محمد
+st.set_page_config(page_title="E7 Universal Engineering Hub", layout="wide", page_icon="🌐")
 
-# 
+# شعندك تفتر هنا
 client = Groq(api_key="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")
 
-def get_ai_explanation(prompt):
-    """دالة لجلب الشرح الهندي من الذكاء الاصطناعي"""
+def get_ai_response(prompt):
     try:
         completion = client.chat.completions.create(
-            messages=[{"role": "user", "content": f"أنت خبير هندسي لشعبة E7. اشرح لي رياضياً وبالخطوات التفصيلية بالعربية ما يلي: {prompt}"}],
+            messages=[{"role": "system", "content": "أنت نظام ذكاء اصطناعي هندسي عالمي مخصص لشعبة E7. تقدم حلولاً دقيقة، شروحات رياضية مفصلة، وتطبيقات عملية باللغة العربية."},
+                      {"role": "user", "content": prompt}],
             model="llama-3.3-70b-versatile",
         )
         return completion.choices[0].message.content
-    except Exception as e:
-        return f"حدث خطأ أثناء الاتصال بالذكاء الاصطناعي: {e}"
+    except: return "⚠️ المحرك الذكي في حالة صيانة حالياً، يرجى المحاولة لاحقاً."
 
-# 
+# :((
 st.markdown("""
-    <div style="background-color:#1e1e1e; padding:15px; border-radius:10px; border-bottom: 4px solid #2e7d32; text-align:center;">
-        <h2 style="color:white; margin:0;">الجامعة التقنية الوسطى - كلية البوليتكنك</h2>
-        <p style="color:#4caf50; font-weight:bold; margin:5px;">مشروع طلاب شعبة E7:| علي نهاد | رؤى نديم | حسن محمد |</p>
+    <style>
+    .main { background-color: #0b0e14; }
+    .stApp { background: linear-gradient(135deg, #0b0e14 0%, #1a1f2c 100%); }
+    .header-style {
+        background: rgba(46, 125, 50, 0.1);
+        padding: 40px; border-radius: 20px;
+        border: 1px solid #2e7d32;
+        text-align: center; margin-bottom: 40px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .footer { text-align: center; padding: 20px; color: #666; font-size: 0.8em; }
+    .quantum-card {
+        background: linear-gradient(45deg, #12100e, #2b4162);
+        padding: 20px; border-radius: 15px; border-left: 5px solid #00d4ff;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+# لا اله الا الله
+st.markdown(f"""
+    <div class="header-style">
+        <h1 style="color:#4caf50; font-family: 'Segoe UI'; letter-spacing: 2px;">E7 UNIVERSAL ENGINEERING PLATFORM</h1>
+        <h4 style="color:white; opacity:0.8;">الجامعة التقنية الوسطى - كلية البوليتكنك - قسم الكترونيك و الذكاء الاصطناعي</h4>
+        <p style="color:#bbb;">اعداد: علي نهاد | رؤى نديم | حسن محمد | عبدالله فراس | علي منتظر | أيمن مصطفى | حسين صباح</p>
     </div>
     """, unsafe_allow_html=True)
 
-# القائمة الجانبية
-app_mode = st.sidebar.selectbox("اختر المختبر الهندسي:", 
-    ["مساعد المهندس الذكي (AI)", 
-     "الأنظمة الرقمية والبوابات",
-     "مختبر الدوائر (DC/AC/RC)", 
-     "مختبر الدوال المثلثية",
-     "مختبر السيجمويد (AI Math)", 
-     "تحليل الدومين والرينج المتقدم"])
+# مادري احس علي نهاد كاعد يفتر هنا
+with st.sidebar:
+    st.markdown("### 🛠️ المختبرات العالمية")
+    app_mode = st.radio("", 
+        ["🏠 الشاشة الرئيسية", 
+         "🧪 كيمياء العناصر والكهرباء", 
+         "📐 الرياضيات الفائقة (Calculus)", 
+         "🔢 المنطق الرقمي (POS/SOP)", 
+         "🔌 مختبر كيرشوف المتقدم", 
+         "🌌 الحوسبة الكمومية (Quantum)"])
+    st.markdown("---")
+    st.write(f"© {datetime.now().year} E7 Engineering Team")
 
-# 1. مساعد المهندس الذكي العام
-if app_mode == "مساعد المهندس الذكي (AI)":
-    st.header("🤖 مساعد المهندس الذكي العام")
-    user_query = st.chat_input("اسأل عن أي مسألة هندسية أو رياضية...")
-    if user_query:
-        with st.chat_message("user"): st.write(user_query)
-        with st.spinner("جاري التحليل..."):
-            response = get_ai_explanation(user_query)
-            with st.chat_message("assistant"): st.write(response)
+# 
+if app_mode == "🏠 الشاشة الرئيسية":
+    col1, col2 = st.columns([2, 1])
+    with col1:
+        st.title("مرحباً بك في مستقبل الهندسة")
+        st.write("هذه المنصة صممت لتكون المرجع الأول لطلاب شعبة E7، حيث تدمج بين العمليات الحسابية التقليدية وقوة الذكاء الاصطناعي التوليدي.")
+        if st.button("بدء محادثة هندسية ذكية"):
+            query = st.text_input("ما الذي يخطر في بالك اليوم؟")
+            if query: st.write(get_ai_response(query))
+    with col2:
+        st.info("💡 **نصيحة اليوم:** استخدم قسم الرياضيات لتحليل المشتقات المعقدة وتطبيقاتها في هندسة الإلكترونيك.")
 
-# 2. الأنظمة الرقمية مع AI
-elif app_mode == "الأنظمة الرقمية والبوابات":
-    st.header("🔢 الأنظمة الرقمية والبوابات المنطقية")
-    tab1, tab2 = st.tabs(["التحويل بين الأنظمة", "محاكاة البوابات"])
+# --- 2. كيمياء العناصر والكهرباء ---
+elif app_mode == "🧪 كيمياء العناصر والكهرباء":
+    st.header("🧪 عناصر الجدول الدوري وتطبيقات الكهرباء")
     
-    with tab1:
-        num = st.number_input("أدخل رقماً عشرياً:", min_value=0, value=10)
-        st.write(f"الثنائي: {bin(num)}, الثماني: {oct(num)}, الستة عشري: {hex(num).upper()}")
-        if st.button("اشرح لي خطوات التحويل"):
-            st.info(get_ai_explanation(f"كيف يتم تحويل الرقم العشري {num} إلى ثنائي وثماني وستة عشري؟"))
-
-    with tab2:
-        gate = st.selectbox("البوابة:", ["AND", "OR", "XOR", "NAND", "NOR", "NOT"])
-        a = st.radio("مدخل A", [0, 1], horizontal=True)
-        b = st.radio("مدخل B", [0, 1], horizontal=True) if gate != "NOT" else None
-        res = 0 # منطق البوابات
-        if gate == "AND": res = a & b
-        elif gate == "OR": res = a | b
-        st.success(f"النتيجة: {res}")
-        if st.button("اشرح عمل هذه البوابة"):
-            st.info(get_ai_explanation(f"اشرح لي جدول الحقيقة (Truth Table) لبوابة {gate}."))
-
-# 3. مختبر الدوائر مع AI
-elif app_mode == "مختبر الدوائر (DC/AC/RC)":
-    st.header("⚡ مختبر الدوائر الكهربائية")
-    r1 = st.number_input("R1 (Ω)", value=10.0)
-    v = st.number_input("الجهد (V)", value=12.0)
-    if st.button("تحليل الدائرة بواسطة AI"):
-        st.write(get_ai_explanation(f"دائرة كهربائية فيها جهد {v} فولت ومقاومة {r1} أوم، احسب التيار والقدرة واشرح القوانين."))
-
-# 4. مختبر الدوال المثلثية مع AI
-elif app_mode == "مختبر الدوال المثلثية":
-    st.header("📐 الدوال المثلثية الستة")
-    func = st.selectbox("الدالة:", ["sin", "cos", "tan", "cot", "sec", "csc"])
-    deg = st.number_input("الزاوية بالدرجات:", value=45.0)
-    if st.button("احسب واشرح بالخطوات"):
-        st.write(get_ai_explanation(f"احسب قيمة {func}({deg}) بالخطوات مع توضيح موقعها في دائرة الوحدة."))
-
-# 5. مختبر السيجمويد مع AI
-elif app_mode == "مختبر السيجمويد (AI Math)":
-    st.header("🧠 دالة السيجمويد والذكاء الاصطناعي")
-    x_val = st.number_input("قيمة x:", value=0.0)
-    if st.button("شرح الأهمية الرياضية"):
-        st.write(get_ai_explanation(f"ما هي دالة السيجمويد؟ وكيف تحسب عند x={x_val}؟ وما علاقتها بالتعلم العميق؟"))
-
-# 6. تحليل الدومين والرينج المتقدم (الميزة الكبرى)
-elif app_mode == "تحليل الدومين والرينج المتقدم":
-    st.header("📉 تحليل الدومين والرينج المتقدم")
-    st.write("يمكنك كتابة الدالة كما في بايثون، مثال: `x**2` للتربيع، `np.sqrt(x)` للجذر، `1/x` للكسر.")
+    # بيانات العناصر
+    elements = {
+        "النحاس (Cu)": {"وصف": "أفضل موصل تجاري للكهرباء.", "تطبيقات": "الأسلاك، المحركات."},
+        "السيليكون (Si)": {"وصف": "شبه موصل أساسي في الترانزستور.", "تطبيقات": "الرقائق الذكية، الخلايا الشمسية."},
+        "الفضة (Ag)": {"وصف": "أعلى ناقلية كهربائية معروفة.", "تطبيقات": "المفاتيح الحساسة، الألواح المتطورة."},
+        "الجرمانيوم (Ge)": {"وصف": "شبه موصل يستخدم في الترددات العالية.", "تطبيقات": "أجهزة الكشف عن الإشعاع."}
+    }
     
-    formula = st.text_input("أدخل معادلة الدالة y = ", "x**2")
-    x_min = st.number_input("بداية الدومين (x min):", value=-10.0)
-    x_max = st.number_input("نهاية الدومين (x max):", value=10.0)
+    c1, c2 = st.columns(2)
+    el1 = c1.selectbox("اختر العنصر الأول:", list(elements.keys()))
+    el2 = c2.selectbox("اختر العنصر الثاني للمقارنة:", list(elements.keys()))
+    
+    if st.button("مقارنة ذكية وتطبيقاتها في الكهرباء"):
+        comparison_prompt = f"قارن بين {el1} و {el2} من حيث الخصائص الذرية، الناقلية الكهربائية، واشرح أين يستخدم كل منهما في صناعة الدوائر الإلكترونية والذكاء الاصطناعي."
+        st.markdown(get_ai_response(comparison_prompt))
+
+# --- 3. الرياضيات الفائقة ---
+elif app_mode == "📐 الرياضيات الفائقة (Calculus)":
+    st.header("📐 مختبر التحليل الرياضي (Domain, Range, Calculus)")
+    
+    formula_input = st.text_input("أدخل الدالة (مثال: x**3 + sin(x) + sqrt(x)):", "x**2")
+    x_sym = sp.symbols('x')
     
     try:
-        x_vals = np.linspace(x_min, x_max, 500)
-        # السماح باستخدام مكتبة numpy داخل الإدخال
-        y_vals = eval(formula, {"x": x_vals, "np": np})
+        expr = sp.sympify(formula_input)
+        derivative = sp.diff(expr, x_sym)
+        integral = sp.integrate(expr, x_sym)
         
-        fig = go.Figure(go.Scatter(x=x_vals, y=y_vals, mode='lines', name=f"y = {formula}"))
-        fig.update_layout(template="plotly_dark", title=f"رسم الدالة: {formula}")
-        st.plotly_chart(fig)
+        st.latex(f"f(x) = {sp.latex(expr)}")
+        col_res1, col_res2 = st.columns(2)
+        col_res1.metric("المشتقة الأولى", str(derivative))
+        col_res2.metric("التكامل غير المحدد", str(integral))
         
-        if st.button("تحليل الدومين والرينج لهذه الدالة بواسطة AI"):
-            with st.spinner("جاري التحليل الرياضي..."):
-                prompt = f"حلل الدالة y = {formula} رياضياً. أوجد الدومين (Domain) والرينج (Range) واشرح إذا كان هناك إزاحة (Shift) أفقية أو عمودية بناءً على القواعد الرياضية."
-                st.markdown(get_ai_explanation(prompt))
-                
-    except Exception as e:
-        st.error(f"خطأ في صيغة الدالة: {e}. تأكد من كتابتها بشكل صحيح (مثلاً x**2 بدلاً من x^2).")
+        # الرسم البياني فائق الدقة
+        x_vals = np.linspace(-10, 10, 1000)
+        f_lambdified = sp.lambdify(x_sym, expr, "numpy")
+        y_vals = f_lambdified(x_vals)
+        
+        fig = go.Figure(go.Scatter(x=x_vals, y=y_vals, line=dict(color='#00ff88', width=2)))
+        st.plotly_chart(fig.update_layout(template="plotly_dark", title="الرسم البياني التفصيلي"))
+        
+        if st.button("تحليل الدومين والرينج والتطبيقات الهندسية"):
+            st.markdown(get_ai_response(f"حلل الدالة {formula_input} من حيث الدومين والرينج، واشرح أهمية مشتقتها وتكاملها في تطبيقات هندسية واقعية (مثل معالجة الإشارات أو أنظمة التحكم)."))
+    except: st.error("⚠️ خطأ في الصيغة الرياضية. يرجى استخدام صيغة Python (مثل x**2).")
 
-st.markdown("---")
-st.write("الجامعة التقنية الوسطى - قسم الكترونيك والذكاء الاصطناعي - شعبة E7")
+# --- 4. المنطق الرقمي (POS/SOP) ---
+elif app_mode == "🔢 المنطق الرقمي (POS/SOP)":
+    st.header("🔢 الأنظمة الرقمية المتقدمة")
+    st.write("أدخل الـ Minterms لاستخراج معادلة SOP أو Maxterms لـ POS.")
+    
+    logic_type = st.radio("التمثيل:", ["SOP (Sum of Products)", "POS (Product of Sums)"])
+    terms = st.text_input("أدخل الأرقام (مثال: 0, 1, 3, 7):", "1, 2, 4")
+    
+    if st.button("توليد جدول الحقيقة وتصميم البوابات"):
+        st.markdown(get_ai_response(f"اشرح بالتفصيل كيفية بناء معادلة {logic_type} للمدخلات {terms}. ارسم جدول الحقيقة ذهنياً واشرح أنواع البوابات (AND, OR, NOT) المطلوبة للتنفيذ."))
 
+# --- 5. مختبر كيرشوف ---
+elif app_mode == "🔌 مختبر كيرشوف المتقدم":
+    st.header("🔌 Kirchhoff's Laws Solver")
+    st.write("حل شبكات الدوائر المعقدة باستخدام قوانين كيرشوف للجهد والتيار.")
+    
+    circuit_desc = st.text_area("صف الدائرة الكهربائية:", "بطارية 20 فولت، مقاومة R1=10 أوم على التوالي، ثم تفرع لمقاومتين R2=5 و R3=5 أوم.")
+    
+    if st.button("حل الدائرة ورسم مسارات التيار"):
+        st.markdown(get_ai_response(f"بناءً على الوصف التالي: '{circuit_desc}'، استخدم قوانين كيرشوف لحساب التيارات في كل فرع والجهد على كل مقاومة واشرح الخطوات بالتفصيل."))
 
+# --- 6. الحوسبة الكمومية ---
+elif app_mode == "🌌 الحوسبة الكمومية (Quantum)":
+    st.header("🌌 بوابة الحوسبة الكمومية")
+    st.markdown("""<div class="quantum-card">مرحباً بك في عصر الـ Qubit. هنا لا نستخدم 0 و 1 فقط، بل نستخدم التراكب الكمي.</div>""", unsafe_allow_html=True)
+    
+    concept = st.selectbox("اختر المفهوم الكمي:", ["Superposition", "Entanglement", "Quantum Gates (Hadamard, CNOT)"])
+    
+    if st.button("شرح وتطبيق محاكاة"):
+        st.markdown(get_ai_response(f"اشرح مفهوم {concept} في الحوسبة الكمومية، وكيف يختلف عن الحوسبة التقليدية، وما هي تطبيقاته في مستقبل الذكاء الاصطناعي."))
 
-
-
+# --- الفوتر ---
+st.markdown(f"""
+    <div class="footer">
+        <hr>
+        شعبة E7 - احسن شعبة E7 - الجامعة التقنية الوسطى<br>
+        تم التطوير ليكون المشروع الأفضل لعام {datetime.now().year}
+    </div>
+    """, unsafe_allow_html=True)
