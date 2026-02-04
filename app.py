@@ -105,7 +105,7 @@ st.sidebar.markdown("""
     </div>
     """, unsafe_allow_html=True)
 st.sidebar.markdown("---")
-st.sidebar.title("🚀 لوحة التحكم الهندسية")
+st.sidebar.title(" لوحة التحكم ")
 st.sidebar.markdown("---")
 
 sections = {
@@ -161,6 +161,7 @@ else:
 
 st.sidebar.markdown("---")
 st.sidebar.info("شعبة E7اعداد")
+
 
 
 
