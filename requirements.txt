@@ -1,10 +1,9 @@
 streamlit
+openai
 numpy
 pandas
-plotly
-groq
-openai
 sympy
-scipy
+plotly
 matplotlib
-Pillow
+scipy
+groq
