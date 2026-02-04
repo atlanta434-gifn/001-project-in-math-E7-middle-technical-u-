@@ -94,6 +94,17 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # والله باردة
+st.sidebar.image("photo_2026-02-04_23-53-08.jpg", use_container_width=True)
+
+st.sidebar.markdown("""
+    <div style="text-align: center; background: rgba(0, 29, 61, 0.5); padding: 10px; border-radius: 10px; border: 1px solid #00d4ff; margin-bottom: 10px;">
+        <p style="color: #ffc300; font-weight: bold; margin-bottom: 5px; font-size: 1.1em;">إعداد الطلاب:</p>
+        <p style="color: #ffffff; margin: 2px 0; font-size: 1em;">حسن محمد جاسم</p>
+        <p style="color: #ffffff; margin: 2px 0; font-size: 1em;">رؤى نديم كريم</p>
+        <p style="color: #ffffff; margin: 2px 0; font-size: 1em;">علي نهاد قادر</p>
+    </div>
+    """, unsafe_allow_html=True)
+st.sidebar.markdown("---")
 st.sidebar.title("🚀 لوحة التحكم الهندسية")
 st.sidebar.markdown("---")
 
@@ -150,4 +161,5 @@ else:
 
 st.sidebar.markdown("---")
 st.sidebar.info("شعبة E7")
+
 
