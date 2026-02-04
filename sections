@@ -1,1 +1,668 @@
+import streamlit as st
+from utils import section_header, get_ai_explanation
 
+def show():
+    section_header("الكيمياء والكهرباء", "العلاقة بين المواد الكيميائية والتطبيقات الكهربائية")
+    
+    st.markdown("""
+    <div class="rtl">
+        هذا القسم مخصص لاستكشاف الخصائص الكيميائية للمواد المستخدمة في الهندسة الكهربائية، مثل الموصلات، أشباه الموصلات، والعوازل.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    element = st.selectbox("اختر مادة/عنصر:", ["النحاس (Copper)", "السيليكون (Silicon)", "الألمنيوم (Aluminum)", "الجرمانيوم (Germanium)", "الليثيوم (Lithium)"])
+    
+    col1, col2 = st.columns(2)
+    #حقوق شعبة E7
+    with col1:
+        st.markdown(f"#### خصائص {element}")
+        if "النحاس" in element:
+            st.write("- الموصلية: عالية جداً")
+            st.write("- الاستخدام: الأسلاك الكهربائية، المحركات")
+        elif "السيليكون" in element:
+            st.write("- الموصلية: شبه موصل")
+            st.write("- الاستخدام: الترانزستورات، الخلايا الشمسية")
+            
+    with col2:
+        if st.button(f"تحليل الذكاء الاصطناعي لـ {element}"):
+            with st.spinner("جاري جلب البيانات..."):
+                explanation = get_ai_explanation(f"Explain the chemical properties and electrical applications of {element}. Include conductivity and common uses in engineering.")
+                st.info(explanation)
+                
+    st.divider()
+    st.subheader("مقارنة المواد")
+    mat1 = st.text_input("المادة الأولى:", "Copper")
+    mat2 = st.text_input("المادة الثانية:", "Aluminum")
+    
+    if st.button("قارن باستخدام الذكاء الاصطناعي"):
+        with st.spinner("جاري المقارنة..."):
+            comparison = get_ai_explanation(f"Compare {mat1} and {mat2} in terms of electrical conductivity, cost, and engineering applications.")
+            st.markdown(comparison)
+
+import streamlit as st
+from utils import section_header, get_ai_explanation
+
+def show():
+    section_header("تحليل الدوائر (Kirchhoff)", "قوانين KVL و KCL وتحليل الدوائر المعقدة")
+    
+    st.markdown("""
+    <div class="rtl">
+        قم بإدخال تفاصيل الدائرة الكهربائية للحصول على تحليل كامل باستخدام قوانين كيرشوف.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    circuit_type = st.radio("نوع الدائرة:", ["DC (تيار مستمر)", "AC (تيار متناوب)"], horizontal=True)
+    
+    with st.expander("إدخال بيانات الدائرة", expanded=True):
+        voltage_source = st.number_input("مصدر الجهد (V):", value=12.0)
+        resistors = st.text_input("قيم المقاومات (أوم، مفصولة بفاصلة):", "10, 20, 30")
+        connection = st.selectbox("نوع الربط:", ["توالي (Series)", "توازي (Parallel)", "مختلط (Mixed)"])
+        
+    if st.button("تحليل الدائرة"):
+        with st.spinner("جاري حساب النتائج..."):
+            prompt = f"Analyze a {circuit_type} circuit with a {voltage_source}V source and resistors {resistors} connected in {connection}. Provide step-by-step solution using KVL/KCL."
+            explanation = get_ai_explanation(prompt)
+            st.markdown("### الحل التفصيلي:")
+            st.markdown(explanation)
+            
+    st.divider()
+    st.subheader("تمثيل بصري (مخطط توضيحي)")
+    st.info("سيتم هنا عرض مخططات ديناميكية للدوائر في التحديثات القادمة.")
+    
+    # Example of AI-powered problem solver
+    st.subheader("مساعد حل المسائل")
+    problem_desc = st.text_area("اصف المسألة هنا:", "دائرة تحتوي على مصدرين جهد وثلاث مقاومات، جد التيار في الفرع الأوسط...")
+    if st.button("حل المسألة"):
+        with st.spinner("جاري الحل..."):
+            solution = get_ai_explanation(problem_desc, context="Circuit Analysis, KVL, KCL")
+            st.success(solution)
+
+import streamlit as st
+from utils import section_header, get_ai_explanation
+
+def show():
+    section_header("حساب التفاضل", "المشتقات وتطبيقاتها")
+    
+    equation = st.text_input("أدخل المعادلة للتفاضل (مثال: x^3 + 2x^2 + 5):", "x^3 + 2x^2 + 5")
+    
+    if st.button("اشتقاق"):
+        with st.spinner("جاري الحساب..."):
+            explanation = get_ai_explanation(f"Find the derivative of {equation} with respect to x. Provide a step-by-step solution and explain the rules used.")
+            st.markdown(explanation)
+            
+    st.divider()
+    st.subheader("تطبيقات التفاضل")
+    app_type = st.selectbox("اختر التطبيق:", ["القيم العظمى والصغرى", "معدلات التغير المرتبطة", "المماس والعمودي"])
+    
+    if st.button("شرح التطبيق"):
+        with st.spinner("جاري جلب الشرح..."):
+            explanation = get_ai_explanation(f"Explain the concept of {app_type} in differential calculus with an example.")
+            st.info(explanation)
+
+import streamlit as st
+import pandas as pd
+from utils import section_header, get_ai_explanation
+
+def show():
+    section_header("المنطق الرقمي", "محاكاة البوابات المنطقية وجداول الحقيقة")
+    
+    tab1, tab2, tab3 = st.tabs(["بوابات منطقية فردية", "محاكاة SOP/POS", "تحويل الأنظمة العددية"])
+    
+    with tab1:
+        st.subheader("محاكاة البوابات")
+        gate_type = st.selectbox("اختر البوابة:", ["AND", "OR", "NOT", "NAND", "NOR", "XOR", "XNOR"])
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            in1 = st.checkbox("Input A", value=False)
+            if gate_type != "NOT":
+                in2 = st.checkbox("Input B", value=False)
+        
+        # Logic Calculation
+        result = False
+        if gate_type == "AND": result = in1 and in2
+        elif gate_type == "OR": result = in1 or in2
+        elif gate_type == "NOT": result = not in1
+        elif gate_type == "NAND": result = not (in1 and in2)
+        elif gate_type == "NOR": result = not (in1 or in2)
+        elif gate_type == "XOR": result = in1 != in2
+        elif gate_type == "XNOR": result = in1 == in2
+        
+        with col2:
+            st.metric("النتيجة (Output)", "1" if result else "0")
+            
+        # Truth Table
+        st.markdown("#### جدول الحقيقة (Truth Table)")
+        if gate_type != "NOT":
+            data = {
+                "A": [0, 0, 1, 1],
+                "B": [0, 1, 0, 1],
+                "Output": [0, 0, 0, 1] if gate_type == "AND" else 
+                          [0, 1, 1, 1] if gate_type == "OR" else
+                          [1, 1, 1, 0] if gate_type == "NAND" else
+                          [1, 0, 0, 0] if gate_type == "NOR" else
+                          [0, 1, 1, 0] if gate_type == "XOR" else
+                          [1, 0, 0, 1]
+            }
+        else:
+            data = {"A": [0, 1], "Output": [1, 0]}
+        
+        st.table(pd.DataFrame(data))
+        
+        if st.button("شرح الذكاء الاصطناعي لهذه البوابة"):
+            with st.spinner("جاري التفكير..."):
+                explanation = get_ai_explanation(f"Explain the {gate_type} logic gate and its truth table.")
+                st.info(explanation)
+
+    with tab2:
+        st.subheader("SOP & POS Forms")
+        st.write("أدخل التعبير المنطقي للحصول على التبسيط والشرح:")
+        expression = st.text_input("التعبير (مثال: A'B + AB'):", "A'B + AB'")
+        if st.button("تحليل التعبير"):
+            with st.spinner("جاري التحليل..."):
+                explanation = get_ai_explanation(f"Analyze and simplify the boolean expression: {expression}. Explain SOP and POS forms.")
+                st.markdown(explanation)
+
+    with tab3:
+        st.subheader("تحويل الأنظمة العددية")
+        num_input = st.text_input("أدخل القيمة:", "10")
+        from_base = st.selectbox("من نظام:", ["Decimal", "Binary", "Hexadecimal"])
+        
+        try:
+            if from_base == "Decimal": val = int(num_input)
+            elif from_base == "Binary": val = int(num_input, 2)
+            else: val = int(num_input, 16)
+            
+            st.write(f"**العشري:** {val}")
+            st.write(f"**الثنائي:** {bin(val)[2:]}")
+            st.write(f"**الست عشري:** {hex(val)[2:].upper()}")
+        except ValueError:
+            st.error("يرجى إدخال قيمة صحيحة للنظام المختار.")
+
+import streamlit as st
+import numpy as np
+import plotly.graph_objects as go
+from utils import section_header, get_ai_explanation
+
+def show():
+    section_header("المجال والمدى", "تحليل الدوال والتمثيل البياني")
+    
+    func_str = st.text_input("أدخل الدالة (مثال: 1/x, sqrt(x), sin(x)):", "sin(x)")
+    
+    if st.button("تحليل الدالة"):
+        with st.spinner("جاري التحليل..."):
+            explanation = get_ai_explanation(f"Calculate the domain and range of the function: f(x) = {func_str}. Explain why.")
+            st.markdown(explanation)
+            
+    st.divider()
+    st.subheader("التمثيل البياني")
+    plot_type = st.selectbox("نوع الرسم:", ["Linear (خطي)", "Polar (قطبي)", "Circular (دائري)"])
+    
+    x = np.linspace(-10, 10, 400)
+    # Basic safe evaluation for plotting
+    try:
+        # Replace common math functions for numpy
+        safe_func = func_str.replace('sin', 'np.sin').replace('cos', 'np.cos').replace('tan', 'np.tan').replace('sqrt', 'np.sqrt').replace('exp', 'np.exp').replace('log', 'np.log').replace('^', '**')
+        y = eval(safe_func)
+        
+        fig = go.Figure()
+        if plot_type == "Linear (خطي)":
+            fig.add_trace(go.Scatter(x=x, y=y, mode='lines', name=func_str, line=dict(color='#00f2ff')))
+        elif plot_type == "Polar (قطبي)":
+            fig.add_trace(go.Scatterpolar(r=y, theta=x*18, mode='lines', name=func_str, line=dict(color='#7000ff')))
+        
+        fig.update_layout(template="plotly_dark", title=f"رسم الدالة: {func_str}")
+        st.plotly_chart(fig, use_container_width=True)
+    except Exception as e:
+        st.error(f"خطأ في الرسم البياني: {e}")
+
+import streamlit as st
+from utils import section_header, get_ai_explanation
+
+def show():
+    section_header("الإلكترونيات وأشباه الموصلات", "الديودات، الترانزستورات، والدوائر المتكاملة")
+    
+    st.markdown("""
+    <div class="rtl">
+        دراسة فيزياء أشباه الموصلات وكيفية عمل المكونات الإلكترونية الحديثة.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    component = st.selectbox("اختر مكوناً إلكترونياً:", ["PN Junction Diode", "Bipolar Junction Transistor (BJT)", "MOSFET", "Zener Diode", "LED"])
+    
+    col1, col2 = st.columns([1, 2])
+    
+    with col1:
+        st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Diode_symbol.svg/200px-Diode_symbol.svg.png", caption="رمز المكون (مثال)")
+        
+    with col2:
+        if st.button(f"شرح عمل {component}"):
+            with st.spinner("جاري التحليل..."):
+                explanation = get_ai_explanation(f"Explain the physics and operation of {component}. Include its V-I characteristics and common applications.")
+                st.info(explanation)
+                
+    st.divider()
+    st.subheader("فيزياء أشباه الموصلات")
+    topic = st.selectbox("اختر موضوعاً:", ["Energy Bands", "P-type vs N-type", "Carrier Transport", "Fermi Level"])
+    
+    if st.button("شرح الموضوع"):
+        with st.spinner("جاري جلب البيانات..."):
+            explanation = get_ai_explanation(f"Explain the concept of {topic} in semiconductor physics.")
+            st.markdown(explanation)
+
+import streamlit as st
+from utils import section_header, get_ai_explanation
+
+def show():
+    section_header("الإنجليزية للمهندسين", "Technical English for Engineers")
+    
+    st.markdown("""
+    <div class="rtl">
+        تطوير مهارات اللغة الإنجليزية التقنية اللازمة للتواصل في البيئات الهندسية العالمية.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    category = st.selectbox("اختر مجال التركيز:", [
+        "المصطلحات التقنية العامة",
+        "كتابة التقارير الهندسية",
+        "المصطلحات الخاصة بالإلكترونيات",
+        "المصطلحات الخاصة بالذكاء الاصطناعي",
+        "المحادثة في بيئة العمل"
+    ])
+    
+    if st.button("عرض الدرس"):
+        with st.spinner("جاري إعداد الدرس..."):
+            explanation = get_ai_explanation(f"Provide a technical English lesson for Arabic-speaking engineers focusing on {category}. Include key vocabulary, phrases, and examples.")
+            st.markdown(explanation)
+            
+    st.divider()
+    st.subheader("مترجم المصطلحات التقنية")
+    term = st.text_input("أدخل المصطلح بالإنجليزية (مثال: Capacitor, Neural Network):")
+    if term:
+        if st.button("ترجمة وشرح"):
+            with st.spinner("جاري الترجمة..."):
+                explanation = get_ai_explanation(f"Translate the engineering term '{term}' to Arabic and provide a brief technical explanation in both languages.")
+                st.info(explanation)
+                
+    st.subheader("تمرين تفاعلي")
+    st.write("حاول ترجمة الجملة التالية: 'The circuit is protected by a fuse.'")
+    if st.button("عرض الترجمة الصحيحة"):
+        st.success("الدائرة محمية بواسطة مصهر (فيوز).")
+
+import streamlit as st
+from utils import section_header, get_ai_explanation
+import sympy as sp
+
+def show():
+    section_header("الجبر العام", "حل المعادلات والتبسيط الجبري")
+    
+    st.markdown("""
+    <div class="rtl">
+        أدخل المعادلة الجبرية التي ترغب في حلها أو تبسيطها.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    equation = st.text_input("المعادلة (مثال: x^2 + 5x + 6 = 0):", "x^2 + 5x + 6 = 0")
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        if st.button("حل المعادلة"):
+            with st.spinner("جاري الحل..."):
+                # Symbolic solution attempt
+                try:
+                    eq_parts = equation.split('=')
+                    if len(eq_parts) == 2:
+                        lhs = sp.sympify(eq_parts[0])
+                        rhs = sp.sympify(eq_parts[1])
+                        sol = sp.solve(lhs - rhs)
+                        st.success(f"الجذور: {sol}")
+                except:
+                    st.warning("تعذر الحل الرمزي المباشر، جاري استخدام الذكاء الاصطناعي...")
+                
+                explanation = get_ai_explanation(f"Solve the algebraic equation: {equation}. Provide step-by-step explanation.")
+                st.markdown(explanation)
+                
+    with col2:
+        if st.button("تبسيط التعبير"):
+            with st.spinner("جاري التبسيط..."):
+                explanation = get_ai_explanation(f"Simplify the algebraic expression: {equation}. Explain the steps.")
+                st.markdown(explanation)
+
+import streamlit as st
+from utils import section_header, get_ai_explanation
+
+def show():
+    section_header("حساب التكامل", "التكامل المحدد وغير المحدد")
+    
+    equation = st.text_input("أدخل المعادلة للتكامل (مثال: 2x + 5):", "2x + 5")
+    int_type = st.radio("نوع التكامل:", ["غير محدد (Indefinite)", "محدد (Definite)"], horizontal=True)
+    
+    if int_type == "محدد (Definite)":
+        col1, col2 = st.columns(2)
+        with col1: lower = st.number_input("الحد الأدنى:", value=0.0)
+        with col2: upper = st.number_input("الحد الأعلى:", value=1.0)
+        prompt = f"Calculate the definite integral of {equation} from {lower} to {upper}. Show steps."
+    else:
+        prompt = f"Calculate the indefinite integral of {equation}. Show steps."
+        
+    if st.button("تكامل"):
+        with st.spinner("جاري الحساب..."):
+            explanation = get_ai_explanation(prompt)
+            st.markdown(explanation)
+            
+    st.divider()
+    st.subheader("تطبيقات التكامل")
+    st.write("استخدم التكامل لحساب المساحات والحجوم.")
+    if st.button("شرح حساب المساحة تحت المنحنى"):
+        with st.spinner("جاري الشرح..."):
+            explanation = get_ai_explanation("Explain how to use integration to find the area under a curve with a simple example.")
+            st.info(explanation)
+
+import streamlit as st
+from utils import section_header, get_ai_explanation
+
+def show():
+    section_header("فلسفة الرياضيات", "تأملات في طبيعة الأرقام والمنطق")
+    
+    st.markdown("""
+    <div class="rtl">
+        هل الرياضيات اختراع أم اكتشاف؟ استكشف الجوانب الفلسفية للعلوم الرياضية.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    topic = st.selectbox("اختر موضوعاً للنقاش:", [
+        "طبيعة الأعداد الحقيقية",
+        "اللانهاية في الرياضيات",
+        "العلاقة بين الرياضيات والواقع",
+        "منطق غودل وعدم الاكتمال",
+        "الرياضيات والجمال"
+    ])
+    
+    if st.button("ابدأ النقاش الفلسفي"):
+        with st.spinner("جاري التفكير بعمق..."):
+            explanation = get_ai_explanation(f"Discuss the philosophy of mathematics regarding: {topic}. Provide different perspectives and historical context.")
+            st.markdown(explanation)
+            
+    st.divider()
+    st.subheader("أقوال مأثورة")
+    st.info('"الرياضيات هي لغة الطبيعة" - غاليليو غاليلي')
+    
+    st.subheader("اسأل الفيلسوف الآلي")
+    user_q = st.text_input("اطرح سؤالاً فلسفياً حول الرياضيات:")
+    if user_q:
+        if st.button("إجابة"):
+            with st.spinner("جاري التحليل..."):
+                ans = get_ai_explanation(user_q, context="Philosophy of Mathematics")
+                st.write(ans)
+
+import streamlit as st
+from utils import section_header, get_ai_explanation
+
+def show():
+    section_header("المختبر العملي DC-AC", "تجارب تفاعلية وإرشادات مخبرية")
+    
+    st.markdown("""
+    <div class="rtl">
+        هذا القسم يحاكي التجارب العملية التي يتم إجراؤها في مختبرات الكهرباء والإلكترونيك.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    experiment = st.selectbox("اختر تجربة:", [
+        "تحقيق قانون أوم (Ohm's Law)",
+        "ربط المقاومات على التوالي والتوازي",
+        "شحن وتفريغ المتسعة (RC Circuit)",
+        "خصائص الديود (Diode Characteristics)",
+        "استخدام الأوسيلوسكوب (Oscilloscope)"
+    ])
+    
+    st.subheader(f"خطوات تجربة: {experiment}")
+    
+    if st.button("عرض دليل التجربة"):
+        with st.spinner("جاري إعداد الدليل..."):
+            explanation = get_ai_explanation(f"Provide a detailed lab manual for the experiment: {experiment}. Include objectives, equipment, procedure, and expected results.")
+            st.markdown(explanation)
+            
+    st.divider()
+    st.subheader("محاكي القياس")
+    col1, col2, col3 = st.columns(3)
+    with col1: v = st.number_input("الجهد المقاس (V):", value=5.0)
+    with col2: r = st.number_input("المقاومة (Ω):", value=100.0)
+    with col3: 
+        i = v / r if r != 0 else 0
+        st.metric("التيار المحسوب (I)", f"{i:.4f} A")
+        
+    st.info("نصيحة مخبرية: تأكد دائماً من فصل الطاقة قبل تغيير التوصيلات في الدائرة.")
+
+import streamlit as st
+from utils import section_header, get_ai_explanation
+
+def show():
+    section_header("الحوسبة الكمية", "البوابات الكمية، الكيوبتات، والتشابك")
+    
+    st.markdown("""
+    <div class="rtl">
+        مرحباً بك في مستقبل الحوسبة. استكشف مفاهيم الكيوبتات والبوابات الكمية.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    q_gate = st.selectbox("اختر بوابة كمية للمحاكاة والشرح:", ["Hadamard (H)", "Pauli-X (NOT)", "Pauli-Y", "Pauli-Z", "CNOT"])
+    
+    if st.button("محاكاة وشرح"):
+        with st.spinner("جاري معالجة البيانات الكمية..."):
+            explanation = get_ai_explanation(f"Explain the quantum gate {q_gate}. Describe its effect on a qubit state and show its matrix representation.")
+            st.markdown(explanation)
+      #حقوق شعبة e7      
+    st.divider()
+    st.subheader("مفاهيم متقدمة")
+    concept = st.radio("اختر مفهوماً:", ["Superposition (التراكب)", "Entanglement (التشابك)", "Quantum Teleportation"], horizontal=True)
+    
+    if st.button("اشرح المفهوم"):
+        with st.spinner("جاري جلب الشرح..."):
+            explanation = get_ai_explanation(f"Explain the concept of {concept} in quantum computing for engineering students.")
+            st.info(explanation)
+            
+    st.subheader("تحدي البرمجة الكمية")
+    st.write("كيف يمكننا بناء دائرة كمية لإنشاء حالة Bell؟")
+    if st.button("عرض الحل"):
+        with st.spinner("جاري الحل..."):
+            explanation = get_ai_explanation("How to create a Bell state using quantum gates (H and CNOT)? Provide the circuit steps and explanation.")
+            st.success(explanation)
+
+import streamlit as st
+from utils import section_header, get_ai_explanation
+
+def show():
+    section_header("أساسيات الكم والفوتونيات", "الضوء، الفوتونات، والتكنولوجيا الكمية")
+    
+    st.markdown("""
+    <div class="rtl">
+        استكشف عالم الفوتونيات وكيفية التحكم في الضوء على المستوى الكمي.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    topic = st.selectbox("اختر موضوعاً:", [
+        "طبيعة الضوء (موجة أم جسيم؟)",
+        "الفوتونات والكيوبتات الضوئية",
+        "الليزر وتطبيقاته",
+        "الألياف البصرية",
+        "المستشعرات الكمية"
+    ])
+    
+    if st.button("شرح المفهوم"):
+        with st.spinner("جاري جلب المعلومات..."):
+            explanation = get_ai_explanation(f"Explain the concept of {topic} in the context of Quantum and Photonics. Why is it important for future engineering?")
+            st.markdown(explanation)
+            
+    st.divider()
+    st.subheader("تطبيقات عملية")
+    st.write("كيف تساهم الفوتونيات في تسريع الإنترنت؟")
+    if st.button("اكتشف الإجابة"):
+        with st.spinner("جاري التحليل..."):
+            explanation = get_ai_explanation("Explain the role of photonics and optical fibers in modern high-speed internet communication.")
+            st.success(explanation)
+
+import streamlit as st
+from utils import section_header, get_ai_explanation
+
+def show():
+    section_header("الفيزياء الكمية", "ميكانيكا الكم وتطبيقاتها الحديثة")
+    
+    st.markdown("""
+    <div class="rtl">
+        فهم القوانين التي تحكم العالم على المستوى الذري ودون الذري.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    topic = st.selectbox("اختر موضوعاً:", [
+        "مبدأ عدم اليقين لهايزنبرغ",
+        "معادلة شرودنغر",
+        "الازدواجية موجة-جسيم",
+        "النفق الكمي (Quantum Tunneling)",
+        "النقاط الكمية (Quantum Dots)"
+    ])
+    
+    if st.button("شرح الموضوع"):
+        with st.spinner("جاري جلب الشرح..."):
+            explanation = get_ai_explanation(f"Explain the concept of {topic} in quantum physics. Why is it fundamental to modern electronics and nanotechnology?")
+            st.markdown(explanation)
+            
+    st.divider()
+    st.subheader("لماذا ندرس الفيزياء الكمية؟")
+    st.write("استكشف كيف غيرت ميكانيكا الكم حياتنا اليومية.")
+    if st.button("أمثلة من الواقع"):
+        with st.spinner("جاري التحليل..."):
+            explanation = get_ai_explanation("Provide real-world examples of technologies that rely on quantum physics (e.g., MRI, Lasers, Transistors).")
+            st.info(explanation)
+
+
+import streamlit as st
+from utils import section_header, get_ai_explanation
+
+def show():
+    section_header("المنطق الرياضي المتقدم", "الاستدلال، المجموعات، والمنطق الرمزي")
+    
+    st.markdown("""
+    <div class="rtl">
+        دراسة القواعد الصارمة للاستدلال الرياضي والمنطق الرمزي.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    problem_type = st.selectbox("اختر نوع المسألة:", [
+        "الاستدلال المنطقي (Logical Deduction)",
+        "نظرية المجموعات (Set Theory)",
+        "المنطق الرمزي (Symbolic Logic)",
+        "البراهين الرياضية (Mathematical Proofs)"
+    ])
+    
+    problem_desc = st.text_area("أدخل المسألة أو المفهوم:", "اشرح الفرق بين الاستنتاج والاستقراء في المنطق الرياضي.")
+    
+    if st.button("تحليل وحل"):
+        with st.spinner("جاري التحليل المنطقي..."):
+            explanation = get_ai_explanation(problem_desc, context=f"Advanced Mathematical Logic - {problem_type}")
+            st.markdown(explanation)
+            
+    st.divider()
+    st.subheader("تحدي الذكاء الاصطناعي")
+    st.write("هل يمكنك حل هذه المفارقة المنطقية؟")
+    if st.button("عرض مفارقة الحلاق"):
+        with st.spinner("جاري جلب المفارقة..."):
+            explanation = get_ai_explanation("Explain the Barber Paradox in set theory and its significance in mathematical logic.")
+            st.info(explanation)
+
+import streamlit as st
+from utils import section_header, get_ai_explanation
+
+def show():
+    section_header("الرسم الهندسي (AutoCAD)", "تعلم مهارات التصميم بمساعدة الحاسوب")
+    
+    st.markdown("""
+    <div class="rtl">
+        دليل شامل لتعلم برنامج الأوتوكاد من البداية وحتى الاحتراف.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    level = st.select_slider("اختر مستوى التعلم:", options=["مبتدئ", "متوسط", "متقدم"])
+    
+    topic = st.selectbox("اختر موضوعاً:", [
+        "واجهة البرنامج والأوامر الأساسية",
+        "الرسم ثنائي الأبعاد (2D Drafting)",
+        "الطبقات (Layers) والألوان",
+        "الأبعاد والنصوص (Dimensions & Text)",
+        "النمذجة ثلاثية الأبعاد (3D Modeling)",
+        "إعداد اللوحات للطباعة"
+    ])
+    
+    if st.button("عرض الدرس"):
+        with st.spinner("جاري إعداد المحتوى التعليمي..."):
+            explanation = get_ai_explanation(f"Provide a tutorial for AutoCAD at {level} level focusing on {topic}. Include common commands and tips.")
+            st.markdown(explanation)
+    #ها علي شلونك        
+    st.divider()
+    st.subheader("قاموس أوامر AutoCAD")
+    cmd = st.text_input("أدخل اسم الأمر (مثال: LINE, CIRCLE, TRIM):")
+    if cmd:
+        if st.button("شرح الأمر"):
+            with st.spinner("جاري البحث..."):
+                explanation = get_ai_explanation(f"Explain the AutoCAD command: {cmd}. How to use it and what are its options?")
+                st.info(explanation)
+
+import streamlit as st
+from utils import section_header, get_ai_explanation
+
+def show():
+    section_header("أساسيات الرياضيات والفيزياء", "المفاهيم الجوهرية للهندسة")
+    
+    st.markdown("""
+    <div class="rtl">
+        مراجعة للمفاهيم الأساسية التي يحتاجها كل مهندس في مسيرته الدراسية.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    category = st.radio("اختر المجال:", ["الفيزياء الكلاسيكية", "الرياضيات الأساسية", "وحدات القياس"], horizontal=True)
+    
+    if category == "الفيزياء الكلاسيكية":
+        topic = st.selectbox("الموضوع:", ["قوانين نيوتن", "الطاقة والشغل", "الكهرومغناطيسية"])
+    elif category == "الرياضيات الأساسية":
+        topic = st.selectbox("الموضوع:", ["المثلثات", "الأعداد المركبة", "المصفوفات"])
+    else:
+        topic = st.selectbox("الموضوع:", ["النظام الدولي للوحدات SI", "التحويل بين الوحدات"])
+        
+    if st.button("شرح المفهوم"):
+        with st.spinner("جاري جلب المعلومات..."):
+            explanation = get_ai_explanation(f"Explain the fundamental concept of {topic} in {category}. Provide examples and formulas.")
+            st.markdown(explanation)
+            
+    st.divider()
+    st.subheader("اختبر معلوماتك")
+    st.write("سؤال سريع: ما هي وحدة قياس الفيض المغناطيسي؟")
+    if st.button("إظهار الإجابة"):
+        st.success("الويبر (Weber)")
+
+import streamlit as st
+from utils import section_header, get_ai_explanation
+
+def show():
+    section_header("الجبر البولياني", "تبسيط الدوال المنطقية وقوانين دي مورغان")
+    
+    st.markdown("""
+    <div class="rtl">
+        الجبر البولياني هو أساس تصميم الدوائر الرقمية. استخدم هذا القسم لتبسيط التعبيرات المنطقية.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    expression = st.text_input("أدخل التعبير البولياني (مثال: A.B + A.B'):", "A.B + A.B'")
+    
+    if st.button("تبسيط"):
+        with st.spinner("جاري التبسيط..."):
+            explanation = get_ai_explanation(f"Simplify the boolean expression: {expression}. Use Boolean algebra laws and explain each step.")
+            st.markdown(explanation)
+            
+    st.divider()
+    st.subheader("قوانين الجبر البولياني")
+    law = st.selectbox("اختر قانوناً للشرح:", ["De Morgan's Laws", "Distributive Law", "Commutative Law", "Identity Law"])
+    
+    if st.button("شرح القانون"):
+        with st.spinner("جاري الشرح..."):
+            explanation = get_ai_explanation(f"Explain {law} in Boolean algebra with examples and truth tables.")
+            st.info(explanation)
