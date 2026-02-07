@@ -1,6 +1,6 @@
 import streamlit as st
 from utils import section_header, get_ai_explanation
-
+#بسم الله الرحمن الرحيم
 def show():
     section_header("المنطق الرياضي المتقدم", "الاستدلال، المجموعات، والمنطق الرمزي")
     
