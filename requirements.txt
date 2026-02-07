@@ -7,3 +7,4 @@ plotly
 matplotlib
 scipy
 groq
+google-generativeai
