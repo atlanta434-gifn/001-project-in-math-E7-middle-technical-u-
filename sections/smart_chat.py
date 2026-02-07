@@ -1,5 +1,5 @@
 import streamlit as st
-بسم الله الرحمن الرحيم
+# بسم الله الرحمن الرحيم
 from utils import get_ai_explanation
 
 def show():
