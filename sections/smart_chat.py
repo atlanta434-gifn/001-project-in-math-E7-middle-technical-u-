@@ -1,57 +1,55 @@
 import streamlit as st
-from utils import get_ai_explanation
+from utils import get_ai_explanation, render_rtl_text
 
 def show():
-    st.markdown("<h1 style='text-align: center; color: #00f2fe;'>💬 الشات الذكي المتعدد (Multi-AI Chat)</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #a1a1aa;'>تواصل مباشرة مع أقوى نماذج الذكاء الاصطناعي العالمية لطلاب E7</p>", unsafe_allow_html=True)
+    # عنوان القسم بتنسيق عصري
+    st.markdown("""
+        <div style="text-align: center; padding: 20px; background: rgba(0, 242, 255, 0.1); border-radius: 15px; border: 1px solid #00f2ff; margin-bottom: 25px;">
+            <h1 style="color: #00f2ff; margin: 0;">🧠 مساعد الذكاء الاصطناعي الهندسي</h1>
+            <p style="color: #ffffff; font-size: 1.1em; margin-top: 10px;">مدعوم بتقنية Groq LPU لسرعة استجابة فائقة</p>
+        </div>
+    """, unsafe_allow_html=True)
 
-    # بسم الله الرحمن الرحيم
-    chat_provider = st.radio(
-        "اختر محرك الذكاء الاصطناعي للمحادثة:",
-        ["Gemini (Google)", "SambaNova (Llama 3.1)", "Groq (Llama 3)"],
-        horizontal=True,
-        index=0
-    )
+    # نظام اختيار النموذج (داخلياً كلهم عبر Groq)
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        model_choice = st.selectbox(
+            "اختر محرك التحليل:",
+            ["Llama 3.3 (الأقوى هندسياً)", "Llama 3.1 (الاستجابة السريعة)", "Mixtral (للمنطق والبرمجة)"],
+            help="نحن نستخدم 4 مفاتيح API لضمان عدم توقف الخدمة."
+        )
+    
+    with col2:
+        st.info("💡 الموقع يعمل الآن بنظام توزيع الحمل (Load Balancing) لضمان استقرار الأقسام الـ 18.")
 
-     
-    provider_map = {
-        "Gemini (Google)": "Gemini",
-        "SambaNova (Llama 3.1)": "SambaNova",
-        "Groq (Llama 3)": "Groq"
+    # خريطة النماذج لتمريرها للدالة
+    model_map = {
+        "Llama 3.3 (الأقوى هندسياً)": "llama-3.3-70b-versatile",
+        "Llama 3.1 (الاستجابة السريعة)": "llama-3.1-70b-versatile",
+        "Mixtral (للمنطق والبرمجة)": "mixtral-8x7b-32768"
     }
-    
-    selected_provider = provider_map[chat_provider]
 
-    st.divider()
-
-    
+    # واجهة الشات
     if "messages" not in st.session_state:
         st.session_state.messages = []
 
-    
+    # عرض الرسائل السابقة بتنسيق RTL
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
-            st.markdown(message["content"])
+            render_rtl_text(message["content"])
 
-     
-    if prompt := st.chat_input(f"اسأل {selected_provider} أي شيء في الهندسة..."):
-        # إضافة رسالة المستخدم للسجل
+    # مدخل الشات
+    if prompt := st.chat_input("اسأل عن أي مفهوم هندسي أو تقني..."):
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
-            st.markdown(prompt)
+            render_rtl_text(prompt)
 
-        # حقوق E7
         with st.chat_message("assistant"):
-            with st.spinner(f"جاري الاستجابة عبر {selected_provider}..."):
-                # استدعاء الدالة الموحدة من utils.py
-                response = get_ai_explanation(prompt, "محادثة عامة في الهندسة والفيزياء", provider=selected_provider)
-                st.markdown(response)
-        
-        
-        st.session_state.messages.append({"role": "assistant", "content": response})
-
-    
-    st.sidebar.markdown("---")
-    if st.sidebar.button("🗑️ مسح ذاكرة الشات"):
-        st.session_state.messages = []
-        st.rerun()
+            with st.spinner("جاري التفكير والتحليل..."):
+                # استدعاء الدالة مع تمرير الموديل المختار
+                response = get_ai_explanation(
+                    prompt, 
+                    context=f"Engineering Chat Mode - Model: {model_choice}",
+                    provider=model_map[model_choice]
+                )
+                render_rtl_text(response)
