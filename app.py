@@ -110,6 +110,7 @@ st.sidebar.markdown("---")
 
 sections = {
     "🏠 الصفحة الرئيسية": "home",
+    "💬 الشات الذكي": "smart_chat",
     "🔌 المنطق الرقمي": "digital_logic",
     "🧪 الكيمياء والكهرباء": "chemistry_electricity",
     "⚡ تحليل الدوائر (Kirchhoff)": "circuit_analysis",
@@ -161,6 +162,7 @@ else:
 
 st.sidebar.markdown("---")
 st.sidebar.info("شعبة E7اعداد")
+
 
 
 
