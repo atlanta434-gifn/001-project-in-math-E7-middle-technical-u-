@@ -4,7 +4,7 @@ from openai import OpenAI
 def get_ai_explanation(prompt, context="General Engineering"):
     full_prompt = f"أنت بروفيسور هندسي من شعبة E7. اشرح بالتفصيل: {prompt}. السياق: {context}"
     
-    # --- المحاولة الأولى: OpenAI ---
+    # اللهم صل على محمد وال محمد
     try:
         client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
         response = client.chat.completions.create(
@@ -13,9 +13,9 @@ def get_ai_explanation(prompt, context="General Engineering"):
         )
         return response.choices[0].message.content
     except Exception as e1:
-        # --- المحاولة الثانية: Groq (سريع جداً) ---
+        # لا اله الا الله
         try:
-            # نستخدم Groq عبر مكتبة OpenAI لأنه متوافق معها
+            # محمد رسول الله
             client_groq = OpenAI(
                 api_key=st.secrets["GROQ_API_KEY"],
                 base_url="https://api.groq.com/openai/v1"
@@ -26,7 +26,7 @@ def get_ai_explanation(prompt, context="General Engineering"):
             )
             return response.choices[0].message.content
         except Exception as e2:
-            # --- المحاولة الثالثة: DeepSeek ---
+            # الحمدلله
             try:
                 client_ds = OpenAI(
                     api_key=st.secrets["DEEPSEEK_API_KEY"],
