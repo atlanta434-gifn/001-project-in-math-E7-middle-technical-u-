@@ -3,7 +3,7 @@ from openai import OpenAI
 import random
 
 def get_ai_explanation(prompt, context="", provider=None):
-    # 1. قائمة بمفاتيحك الأربعة
+    #بسم الله الرحمن الرحيم
     api_keys = [
         st.secrets.get("GROQ_API_KEY_1"),
         st.secrets.get("GROQ_API_KEY_2"),
@@ -11,18 +11,17 @@ def get_ai_explanation(prompt, context="", provider=None):
         st.secrets.get("GROQ_API_KEY_4")
     ]
     
-    # تصفية المفاتيح الموجودة فعلياً فقط
+    
     valid_keys = [k for k in api_keys if k]
     
     if not valid_keys:
         return "خطأ: لم يتم العثور على مفاتيح API في Secrets."
 
-    # 2. تحديد الموديل المطلوب (استخدام الأقوى افتراضياً)
-    # يمكنك تغيير الموديل هنا لجميع الأقسام الـ 18 بضغطة واحدة
+      
     selected_model = "llama-3.3-70b-versatile" 
     
-    # 3. محاولة الاتصال مع نظام حماية (Try-Except)
-    random.shuffle(valid_keys) # خلط المفاتيح لتوزيع الحمل بالتساوي
+     
+    random.shuffle(valid_keys) 
     
     for key in valid_keys:
         try:
@@ -41,7 +40,7 @@ def get_ai_explanation(prompt, context="", provider=None):
             return response.choices[0].message.content
             
         except Exception as e:
-            # إذا فشل مفتاح (مثلاً وصل للحد الأقصى)، سينتقل المفتاح التالي في الحلقة
+            
             continue 
             
     return "عذراً، جميع مفاتيح الخدمة مشغولة حالياً. يرجى المحاولة بعد دقيقة."
