@@ -1,51 +1,55 @@
 import streamlit as st
-import google.generativeai as genai
 from openai import OpenAI
+import random
 
 def get_ai_explanation(prompt, context="", provider=None):
-    if provider is None:
-        provider = st.session_state.get('ai_provider', 'Gemini')
-        
-    try:
-        full_prompt = f"Context: {context}\n\nUser Question: {prompt}\n\nPlease provide a detailed explanation in Arabic."
-        
-        # 1. تصحيح محرك Gemini (استخدام الموديل المستقر)
-        if provider == "Gemini":
-            api_key = st.secrets.get("GEMINI_API_KEY")
-            genai.configure(api_key=api_key)
-            # استخدام gemini-1.5-flash بدون بادئة v1beta
-            model = genai.GenerativeModel('gemini-1.5-flash')
-            response = model.generate_content(full_prompt)
-            return response.text
+    # 1. قائمة بمفاتيحك الأربعة
+    api_keys = [
+        st.secrets.get("GROQ_API_KEY_1"),
+        st.secrets.get("GROQ_API_KEY_2"),
+        st.secrets.get("GROQ_API_KEY_3"),
+        st.secrets.get("GROQ_API_KEY_4")
+    ]
+    
+    # تصفية المفاتيح الموجودة فعلياً فقط
+    valid_keys = [k for k in api_keys if k]
+    
+    if not valid_keys:
+        return "خطأ: لم يتم العثور على مفاتيح API في Secrets."
 
-        # 2. تصحيح محرك SambaNova (تحديث اسم الموديل للمتاح حالياً)
-        elif provider == "SambaNova":
-            api_key = st.secrets.get("SAMBANOVA_API_KEY")
-            client = OpenAI(api_key=api_key, base_url="https://api.sambanova.ai/v1")
-            # تغيير الموديل إلى الإصدار الأكثر استقراراً لديهم
+    # 2. تحديد الموديل المطلوب (استخدام الأقوى افتراضياً)
+    # يمكنك تغيير الموديل هنا لجميع الأقسام الـ 18 بضغطة واحدة
+    selected_model = "llama-3.3-70b-versatile" 
+    
+    # 3. محاولة الاتصال مع نظام حماية (Try-Except)
+    random.shuffle(valid_keys) # خلط المفاتيح لتوزيع الحمل بالتساوي
+    
+    for key in valid_keys:
+        try:
+            client = OpenAI(api_key=key, base_url="https://api.groq.com/openai/v1")
+            
+            full_prompt = f"Context: {context}\n\nUser Question: {prompt}\n\nPlease provide a detailed, step-by-step engineering explanation in Arabic."
+            
             response = client.chat.completions.create(
-                model="Meta-Llama-3.1-405B-Instruct-v1", # أو "Meta-Llama-3.1-8B-Instruct" للتجربة
-                messages=[{"role": "user", "content": full_prompt}]
-            )
-            return response.choices[0].message.content
-
-        # 3. محرك Groq (الأضمن دائماً)
-        elif provider == "Groq":
-            api_key = st.secrets.get("GROQ_API_KEY")
-            client = OpenAI(api_key=api_key, base_url="https://api.groq.com/openai/v1")
-            response = client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
-                messages=[{"role": "user", "content": full_prompt}]
+                model=selected_model,
+                messages=[
+                    {"role": "system", "content": "أنت بروفيسور هندسي خبير، تشرح المفاهيم بوضوح تام وباللغة العربية العلمية."},
+                    {"role": "user", "content": full_prompt}
+                ],
+                temperature=0.7
             )
             return response.choices[0].message.content
             
-        return "المزود غير مدعوم."
-    except Exception as e:
-        return f"خطأ في الاتصال بـ {provider}: {str(e)}"
+        except Exception as e:
+            # إذا فشل مفتاح (مثلاً وصل للحد الأقصى)، سينتقل المفتاح التالي في الحلقة
+            continue 
+            
+    return "عذراً، جميع مفاتيح الخدمة مشغولة حالياً. يرجى المحاولة بعد دقيقة."
 
-# الدوال الأساسية لضمان عمل الأقسام الـ 18
 def section_header(title, subtitle=""):
-    st.markdown(f'<div class="rtl"><h2>{title}</h2><p style="color:#7000ff;">{subtitle}</p></div>', unsafe_allow_html=True)
-
-def render_rtl_text(text, tag="p"):
-    st.markdown(f'<{tag} style="direction:rtl;text-align:right;">{text}</{tag}>', unsafe_allow_html=True)
+    st.markdown(f"""
+    <div style="direction: rtl; text-align: right; border-right: 5px solid #00f2ff; padding-right: 15px; margin-bottom: 20px;">
+        <h2 style="color: white; margin-bottom: 5px;">{title}</h2>
+        <p style="color: #00f2ff; font-size: 1.1em;">{subtitle}</p>
+    </div>
+    """, unsafe_allow_html=True)
